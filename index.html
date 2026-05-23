@@ -1094,6 +1094,111 @@ footer {
 .ft-motto-fr { font-family:var(--mono); font-size:0.48rem; letter-spacing:0.4em; color:var(--text3); text-transform:uppercase; display:block; margin-top:0.4rem; }
 .ft-right { text-align:right; font-family:var(--mono); font-size:0.48rem; letter-spacing:0.2em; color:var(--text3); text-transform:uppercase; line-height:2.2; }
 
+/* ═══════════════════════════════════════════
+   LEXIQUE
+═══════════════════════════════════════════ */
+.lex-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 3.5rem; flex-wrap: wrap; gap: 1.5rem;
+}
+.lex-count {
+  font-family: var(--mono); font-size: 0.48rem; letter-spacing: 0.35em;
+  color: var(--text3); text-transform: uppercase; margin-top: 0.5rem;
+}
+.lex-search-wrap {
+  position: relative;
+}
+.lex-search {
+  background: var(--bg2); border: 1px solid var(--border2);
+  color: var(--text1); font-family: var(--mono); font-size: 0.58rem;
+  letter-spacing: 0.1em; padding: 0.55rem 1rem 0.55rem 2.2rem;
+  outline: none; width: 220px;
+  transition: border-color 0.3s, background 0.3s;
+}
+.lex-search::placeholder { color: var(--text3); }
+.lex-search:focus { border-color: var(--ice4); background: var(--bg3); }
+.lex-search-icon {
+  position: absolute; left: 0.7rem; top: 50%; transform: translateY(-50%);
+  color: var(--text3); font-size: 0.7rem; pointer-events: none;
+}
+
+.lex-cats {
+  display: flex; gap: 1px; background: var(--border); margin-bottom: 3rem; flex-wrap: wrap;
+}
+.lex-cat-btn {
+  flex: 1; min-width: 120px; background: var(--bg2); border: none; cursor: pointer;
+  padding: 0.8rem 1rem; font-family: var(--mono); font-size: 0.48rem;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--text2);
+  transition: background 0.3s, color 0.3s; position: relative; text-align: center;
+}
+.lex-cat-btn::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+  background:var(--ice4); transform:scaleX(0); transition:transform 0.3s;
+}
+.lex-cat-btn.active { background:var(--bg4); color:var(--ice2); }
+.lex-cat-btn.active::after { transform:scaleX(1); }
+.lex-cat-btn:hover { background:var(--bg3); color:var(--text1); }
+
+.lex-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1px; background: var(--border);
+}
+
+.lex-card {
+  background: var(--bg2); padding: 1.6rem 1.8rem; position: relative;
+  transition: background 0.3s;
+  overflow: hidden;
+}
+.lex-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%;
+  background: var(--ice5); transition: background 0.3s;
+}
+.lex-card:hover { background: var(--bg3); }
+.lex-card:hover::before { background: var(--ice3); }
+.lex-card.hidden { display: none; }
+
+.lex-cat-tag {
+  font-family: var(--mono); font-size: 0.4rem; letter-spacing: 0.4em;
+  text-transform: uppercase; margin-bottom: 0.9rem; display: block;
+}
+.lex-cat-tag.tag-salut    { color: var(--ice3); }
+.lex-cat-tag.tag-relation { color: var(--gold1); }
+.lex-cat-tag.tag-ops      { color: var(--red2); }
+.lex-cat-tag.tag-materiel { color: #7a9e7e; }
+.lex-cat-tag.tag-finance  { color: var(--gold2); }
+.lex-cat-tag.tag-hierarch { color: var(--ice2); }
+
+.lex-ru {
+  font-family: var(--display); font-weight: 700; font-size: 1.15rem;
+  color: var(--text0); letter-spacing: 0.06em; margin-bottom: 0.3rem;
+  line-height: 1.1;
+}
+.lex-phonetic {
+  font-family: var(--mono); font-size: 0.5rem; letter-spacing: 0.2em;
+  color: var(--ice4); text-transform: uppercase; margin-bottom: 0.7rem;
+}
+.lex-fr {
+  font-family: var(--serif); font-style: italic; font-size: 1rem;
+  color: var(--text1); font-weight: 300; line-height: 1.5;
+}
+
+.lex-no-result {
+  display: none; grid-column: 1/-1;
+  text-align: center; padding: 4rem 2rem;
+  font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.3em;
+  color: var(--text3); text-transform: uppercase;
+}
+.lex-no-result.show { display: block; }
+
+.lex-footer-strip {
+  margin-top: 3rem; padding: 1.4rem 2rem;
+  background: var(--bg1); border: 1px solid var(--border);
+  display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;
+  justify-content: space-between;
+}
+.lfs-label { font-family: var(--mono); font-size: 0.44rem; letter-spacing: 0.4em; color: var(--text3); text-transform: uppercase; }
+.lfs-val   { font-family: var(--serif); font-style: italic; font-size: 0.95rem; color: var(--text2); }
+
 </style>
 </head>
 <body>
@@ -1172,6 +1277,7 @@ footer {
     <li><a href="#ambitions">Ambitions</a></li>
     <li><a href="#facettes">Facettes</a></li>
     <li><a href="#membres">Membres</a></li>
+    <li><a href="#lexique">Lexique</a></li>
     <li><a href="#finale">Finale</a></li>
   </ul>
   <div class="nav-classif">⬛ Confidentiel</div>
@@ -2334,6 +2440,247 @@ footer {
 </section>
 
 
+<!-- ════════ LEXIQUE ════════ -->
+<div class="hdiv"></div>
+<section id="lexique" class="section-pad alt2">
+  <div class="container">
+    <p class="sec-eyebrow reveal">Zvezdny Yazyk — Langue de l'Étoile</p>
+    <h2 class="sec-h2 reveal reveal-delay-1"><em>Lexique</em> Opérationnel</h2>
+    <div class="sec-rule reveal reveal-delay-2"></div>
+    <p class="sec-lead reveal reveal-delay-2">Le vocabulaire interne de la Chernaya Zvezda. Des termes russes transcrits phonétiquement, utilisés lors des communications sensibles pour rendre les échanges opaques aux oreilles extérieures. Apprendre ces mots, c'est entrer dans la langue de l'Étoile.</p>
+
+    <div class="reveal reveal-delay-3">
+      <!-- Header avec recherche -->
+      <div class="lex-header">
+        <div>
+          <div class="lex-count" id="lexCount">// 28 entrées — Dossier Langue Interne</div>
+        </div>
+        <div class="lex-search-wrap">
+          <span class="lex-search-icon">⌕</span>
+          <input class="lex-search" type="text" id="lexSearch" placeholder="Rechercher..." oninput="filterLex()">
+        </div>
+      </div>
+
+      <!-- Filtres par catégorie -->
+      <div class="lex-cats">
+        <button class="lex-cat-btn active" onclick="filterCat('all',this)">// Tout</button>
+        <button class="lex-cat-btn" onclick="filterCat('salut',this)">// Salutations</button>
+        <button class="lex-cat-btn" onclick="filterCat('relation',this)">// Relations</button>
+        <button class="lex-cat-btn" onclick="filterCat('hierarch',this)">// Hiérarchie</button>
+        <button class="lex-cat-btn" onclick="filterCat('ops',this)">// Opérations</button>
+        <button class="lex-cat-btn" onclick="filterCat('materiel',this)">// Matériel</button>
+        <button class="lex-cat-btn" onclick="filterCat('finance',this)">// Finance</button>
+      </div>
+
+      <!-- Grille lexique -->
+      <div class="lex-grid" id="lexGrid">
+
+        <!-- SALUTATIONS -->
+        <div class="lex-card" data-cat="salut" data-search="priviet salut bonjour">
+          <span class="lex-cat-tag tag-salut">// Salutation</span>
+          <div class="lex-ru">Priviet</div>
+          <div class="lex-phonetic">[ pri-viet ]</div>
+          <div class="lex-fr">Salut</div>
+        </div>
+        <div class="lex-card" data-cat="salut" data-search="bez problem pas problème">
+          <span class="lex-cat-tag tag-salut">// Salutation</span>
+          <div class="lex-ru">Bez Problem</div>
+          <div class="lex-phonetic">[ biez pro-blèm ]</div>
+          <div class="lex-fr">Pas de problème</div>
+        </div>
+        <div class="lex-card" data-cat="salut" data-search="za bratvou bratva pour">
+          <span class="lex-cat-tag tag-salut">// Cri de ralliement</span>
+          <div class="lex-ru">Za Bratvou !</div>
+          <div class="lex-phonetic">[ za brat-vou ]</div>
+          <div class="lex-fr">Pour la bratva !</div>
+        </div>
+        <div class="lex-card" data-cat="salut" data-search="spassiba merci">
+          <span class="lex-cat-tag tag-salut">// Salutation</span>
+          <div class="lex-ru">Spassiba</div>
+          <div class="lex-phonetic">[ spa-si-ba ]</div>
+          <div class="lex-fr">Merci</div>
+        </div>
+
+        <!-- RELATIONS -->
+        <div class="lex-card" data-cat="relation" data-search="brat frere frérot">
+          <span class="lex-cat-tag tag-relation">// Relation</span>
+          <div class="lex-ru">Brat</div>
+          <div class="lex-phonetic">[ brat ]</div>
+          <div class="lex-fr">Frère / frérot</div>
+        </div>
+        <div class="lex-card" data-cat="relation" data-search="bratan bro">
+          <span class="lex-cat-tag tag-relation">// Relation</span>
+          <div class="lex-ru">Bratan</div>
+          <div class="lex-phonetic">[ bra-tan ]</div>
+          <div class="lex-fr">Bro</div>
+        </div>
+        <div class="lex-card" data-cat="relation" data-search="droug ami">
+          <span class="lex-cat-tag tag-relation">// Relation</span>
+          <div class="lex-ru">Droug</div>
+          <div class="lex-phonetic">[ droug ]</div>
+          <div class="lex-fr">Ami</div>
+        </div>
+        <div class="lex-card" data-cat="relation" data-search="tovarich camarade">
+          <span class="lex-cat-tag tag-relation">// Relation</span>
+          <div class="lex-ru">Tovarich</div>
+          <div class="lex-phonetic">[ to-va-rich' ]</div>
+          <div class="lex-fr">Camarade</div>
+        </div>
+        <div class="lex-card" data-cat="relation" data-search="semya famille">
+          <span class="lex-cat-tag tag-relation">// Relation</span>
+          <div class="lex-ru">Semya</div>
+          <div class="lex-phonetic">[ siem-ya ]</div>
+          <div class="lex-fr">Famille</div>
+        </div>
+
+        <!-- HIÉRARCHIE -->
+        <div class="lex-card" data-cat="hierarch" data-search="pakhan boss parrain chef">
+          <span class="lex-cat-tag tag-hierarch">// Hiérarchie</span>
+          <div class="lex-ru">Pakhan</div>
+          <div class="lex-phonetic">[ pa-khan ]</div>
+          <div class="lex-fr">Boss / Parrain</div>
+        </div>
+        <div class="lex-card" data-cat="hierarch" data-search="komandir commandant">
+          <span class="lex-cat-tag tag-hierarch">// Hiérarchie</span>
+          <div class="lex-ru">Komandir</div>
+          <div class="lex-phonetic">[ ko-man-dir ]</div>
+          <div class="lex-fr">Commandant</div>
+        </div>
+        <div class="lex-card" data-cat="hierarch" data-search="naïomnik mercenaire">
+          <span class="lex-cat-tag tag-hierarch">// Hiérarchie</span>
+          <div class="lex-ru">Naïomnik</div>
+          <div class="lex-phonetic">[ naï-om-nik ]</div>
+          <div class="lex-fr">Mercenaire</div>
+        </div>
+        <div class="lex-card" data-cat="hierarch" data-search="vory vor voleur loi">
+          <span class="lex-cat-tag tag-hierarch">// Hiérarchie</span>
+          <div class="lex-ru">Vor</div>
+          <div class="lex-phonetic">[ vor ]</div>
+          <div class="lex-fr">Voleur — titre honorifique du milieu</div>
+        </div>
+
+        <!-- OPÉRATIONS -->
+        <div class="lex-card" data-cat="ops" data-search="razborka règlement comptes">
+          <span class="lex-cat-tag tag-ops">// Opération</span>
+          <div class="lex-ru">Razborka</div>
+          <div class="lex-phonetic">[ raz-bor-ka ]</div>
+          <div class="lex-fr">Règlement de comptes</div>
+        </div>
+        <div class="lex-card" data-cat="ops" data-search="zakaz contrat commande">
+          <span class="lex-cat-tag tag-ops">// Opération</span>
+          <div class="lex-ru">Zakaz</div>
+          <div class="lex-phonetic">[ za-kaz ]</div>
+          <div class="lex-fr">Contrat / commande</div>
+        </div>
+        <div class="lex-card" data-cat="ops" data-search="operatsiya opération">
+          <span class="lex-cat-tag tag-ops">// Opération</span>
+          <div class="lex-ru">Operatsiya</div>
+          <div class="lex-phonetic">[ o-pé-ra-tsi-ya ]</div>
+          <div class="lex-fr">Opération</div>
+        </div>
+        <div class="lex-card" data-cat="ops" data-search="politsiya police">
+          <span class="lex-cat-tag tag-ops">// Opération</span>
+          <div class="lex-ru">Politsiya</div>
+          <div class="lex-phonetic">[ po-li-tsi-ya ]</div>
+          <div class="lex-fr">Police</div>
+        </div>
+        <div class="lex-card" data-cat="ops" data-search="sdelka deal accord">
+          <span class="lex-cat-tag tag-ops">// Opération</span>
+          <div class="lex-ru">Sdelka</div>
+          <div class="lex-phonetic">[ sdièl-ka ]</div>
+          <div class="lex-fr">Deal / accord</div>
+        </div>
+        <div class="lex-card" data-cat="ops" data-search="krysha toit couverture protection">
+          <span class="lex-cat-tag tag-ops">// Opération</span>
+          <div class="lex-ru">Krysha</div>
+          <div class="lex-phonetic">[ kry-cha ]</div>
+          <div class="lex-fr">Toit — couverture / protection</div>
+        </div>
+        <div class="lex-card" data-cat="ops" data-search="tochka point lieu planque">
+          <span class="lex-cat-tag tag-ops">// Opération</span>
+          <div class="lex-ru">Tochka</div>
+          <div class="lex-phonetic">[ toch-ka ]</div>
+          <div class="lex-fr">Point de deal / lieu d'opération</div>
+        </div>
+
+        <!-- MATÉRIEL -->
+        <div class="lex-card" data-cat="materiel" data-search="oroujié arme">
+          <span class="lex-cat-tag tag-materiel">// Matériel</span>
+          <div class="lex-ru">Oroujié</div>
+          <div class="lex-phonetic">[ o-rou-ji-yé ]</div>
+          <div class="lex-fr">Arme</div>
+        </div>
+        <div class="lex-card" data-cat="materiel" data-search="patrony munitions balles">
+          <span class="lex-cat-tag tag-materiel">// Matériel</span>
+          <div class="lex-ru">Patrony</div>
+          <div class="lex-phonetic">[ pa-tro-ny ]</div>
+          <div class="lex-fr">Munitions</div>
+        </div>
+        <div class="lex-card" data-cat="materiel" data-search="noj couteau lame">
+          <span class="lex-cat-tag tag-materiel">// Matériel</span>
+          <div class="lex-ru">Noj</div>
+          <div class="lex-phonetic">[ noj ]</div>
+          <div class="lex-fr">Couteau</div>
+        </div>
+        <div class="lex-card" data-cat="materiel" data-search="machina voiture véhicule bagnole">
+          <span class="lex-cat-tag tag-materiel">// Matériel</span>
+          <div class="lex-ru">Machina</div>
+          <div class="lex-phonetic">[ ma-chi-na ]</div>
+          <div class="lex-fr">Voiture</div>
+        </div>
+        <div class="lex-card" data-cat="materiel" data-search="grouz marchandise cargaison">
+          <span class="lex-cat-tag tag-materiel">// Matériel</span>
+          <div class="lex-ru">Grouz</div>
+          <div class="lex-phonetic">[ grouz ]</div>
+          <div class="lex-fr">Marchandise / cargaison</div>
+        </div>
+
+        <!-- FINANCE -->
+        <div class="lex-card" data-cat="finance" data-search="dengi argent fric">
+          <span class="lex-cat-tag tag-finance">// Finance</span>
+          <div class="lex-ru">Dengi</div>
+          <div class="lex-phonetic">[ dieng-ui ]</div>
+          <div class="lex-fr">Argent</div>
+        </div>
+        <div class="lex-card" data-cat="finance" data-search="obschak caisse commune fonds">
+          <span class="lex-cat-tag tag-finance">// Finance</span>
+          <div class="lex-ru">Obschak</div>
+          <div class="lex-phonetic">[ ob-chak ]</div>
+          <div class="lex-fr">Caisse commune de l'organisation</div>
+        </div>
+        <div class="lex-card" data-cat="finance" data-search="dolg dette">
+          <span class="lex-cat-tag tag-finance">// Finance</span>
+          <div class="lex-ru">Dolg</div>
+          <div class="lex-phonetic">[ dolg ]</div>
+          <div class="lex-fr">Dette</div>
+        </div>
+
+        <div class="lex-no-result" id="lexNoResult">// Aucun résultat — mot non répertorié dans le Zvezdny Yazyk</div>
+      </div>
+
+      <!-- Footer strip -->
+      <div class="lex-footer-strip">
+        <div>
+          <div class="lfs-label">Système</div>
+          <div class="lfs-val">Zvezdny Yazyk — Révision III</div>
+        </div>
+        <div>
+          <div class="lfs-label">Responsable</div>
+          <div class="lfs-val">I. Volkov · S. Kozlov</div>
+        </div>
+        <div>
+          <div class="lfs-label">Mise à jour</div>
+          <div class="lfs-val">Tous les 3 mois — Version actuelle : active</div>
+        </div>
+        <div>
+          <div class="lfs-label">Diffusion</div>
+          <div class="lfs-val">Cercle Interne uniquement — Vnutrenniy Krug</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ════════ FINALE ════════ -->
 <div class="hdiv"></div>
 <section id="finale">
@@ -2481,7 +2828,31 @@ function switchTab(tab, btn) {
   btn.classList.add('active');
 }
 
-/* ──── PRELOADER ──── */
+/* ──── LEXIQUE ──── */
+let currentCat = 'all';
+
+function filterLex() {
+  const q = document.getElementById('lexSearch').value.toLowerCase();
+  const cards = document.querySelectorAll('.lex-card');
+  let visible = 0;
+  cards.forEach(c => {
+    const matchCat = currentCat === 'all' || c.dataset.cat === currentCat;
+    const matchQ   = !q || c.dataset.search.includes(q) || c.querySelector('.lex-ru').textContent.toLowerCase().includes(q) || c.querySelector('.lex-fr').textContent.toLowerCase().includes(q);
+    if (matchCat && matchQ) { c.classList.remove('hidden'); visible++; }
+    else c.classList.add('hidden');
+  });
+  document.getElementById('lexNoResult').classList.toggle('show', visible === 0);
+  document.getElementById('lexCount').textContent = `// ${visible} entrée${visible>1?'s':''} — Dossier Langue Interne`;
+}
+
+function filterCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.lex-cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterLex();
+}
+
+
 (function() {
   const pl      = document.getElementById('preloader');
   const bar     = document.getElementById('plBar');
