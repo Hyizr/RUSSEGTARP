@@ -1,0 +1,2522 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chernaya Zvezda — Дossier Confidentiel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Unbounded:wght@200;400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Raleway:ital,wght@0,200;0,300;0,400;0,600;1,200;1,300&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   ROOT — VARIABLES
+═══════════════════════════════════════════ */
+:root {
+  --bg0: #020406;
+  --bg1: #06080c;
+  --bg2: #090c13;
+  --bg3: #0d1219;
+  --bg4: #121922;
+  --bg5: #18202e;
+
+  --ice1: #c8dff0;
+  --ice2: #8fb8d4;
+  --ice3: #5090b8;
+  --ice4: #2a6888;
+  --ice5: #16425a;
+
+  --red1: #8a1818;
+  --red2: #b02020;
+  --red3: #d42828;
+  --red4: rgba(180,30,30,0.12);
+
+  --gold1: #c89030;
+  --gold2: #e0b050;
+  --gold3: rgba(200,144,48,0.12);
+
+  --text0: #eef4fa;
+  --text1: #9ab8cc;
+  --text2: #567890;
+  --text3: #2a4050;
+
+  --mono: 'Share Tech Mono', monospace;
+  --sans: 'Raleway', sans-serif;
+  --display: 'Unbounded', sans-serif;
+  --serif: 'Cormorant Garamond', serif;
+
+  --border: rgba(184,207,224,0.06);
+  --border2: rgba(184,207,224,0.12);
+  --border3: rgba(184,207,224,0.2);
+
+  --glass-bg: rgba(6,8,14,0.72);
+  --glass-blur: blur(24px) saturate(160%);
+}
+
+/* ═══════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg0);
+  color: var(--text1);
+  font-family: var(--sans);
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* Scanlines */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 9998;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.025) 2px, rgba(0,0,0,0.025) 4px);
+}
+
+/* Grain texture */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 9999;
+  pointer-events: none; opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px;
+}
+
+::-webkit-scrollbar { width: 2px; }
+::-webkit-scrollbar-track { background: var(--bg0); }
+::-webkit-scrollbar-thumb { background: var(--ice5); }
+
+/* ═══════════════════════════════════════════
+   PRELOADER — ÉCRAN DE CHARGEMENT
+═══════════════════════════════════════════ */
+#preloader {
+  position: fixed; inset: 0; z-index: 99999;
+  background: var(--bg0);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+#preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.pl-corner { position: absolute; width: 22px; height: 22px; opacity: 0.3; }
+.pl-corner.tl { top: 2rem; left: 2.5rem; border-top: 1px solid var(--ice3); border-left: 1px solid var(--ice3); }
+.pl-corner.tr { top: 2rem; right: 2.5rem; border-top: 1px solid var(--ice3); border-right: 1px solid var(--ice3); }
+.pl-corner.bl { bottom: 2rem; left: 2.5rem; border-bottom: 1px solid var(--ice3); border-left: 1px solid var(--ice3); }
+.pl-corner.br { bottom: 2rem; right: 2.5rem; border-bottom: 1px solid var(--ice3); border-right: 1px solid var(--ice3); }
+
+.pl-classif {
+  font-family: var(--mono); font-size: 0.46rem; letter-spacing: 0.5em;
+  color: var(--red2); border: 1px solid rgba(176,32,32,0.4);
+  padding: 0.25rem 0.8rem; text-transform: uppercase;
+  background: rgba(138,24,24,0.06); margin-bottom: 3rem;
+  animation: pulseRed 2s ease-in-out infinite;
+}
+
+.pl-emblem {
+  width: 72px; height: 72px; margin-bottom: 2.5rem; opacity: 0;
+  animation: plFadeIn 0.6s 0.3s ease forwards;
+}
+.pl-ring-spin { animation: spin 8s linear infinite; transform-origin: center; }
+
+.pl-title {
+  font-family: var(--display); font-weight: 900; font-size: clamp(1.4rem, 4vw, 2.4rem);
+  color: var(--text0); letter-spacing: 0.2em; text-transform: uppercase;
+  margin-bottom: 0.4rem; opacity: 0;
+  animation: plFadeIn 0.6s 0.6s ease forwards;
+}
+.pl-sub {
+  font-family: var(--mono); font-size: 0.5rem; letter-spacing: 0.5em;
+  color: var(--text3); text-transform: uppercase; margin-bottom: 3rem;
+  opacity: 0; animation: plFadeIn 0.5s 0.9s ease forwards;
+}
+
+.pl-terminal {
+  font-family: var(--mono); font-size: 0.58rem; color: var(--ice3);
+  letter-spacing: 0.12em; line-height: 1.9;
+  text-align: left; min-width: 340px; max-width: 500px;
+  margin-bottom: 2.8rem; opacity: 0;
+  animation: plFadeIn 0.5s 1.1s ease forwards;
+}
+.pl-terminal-line { display: block; opacity: 0; }
+.pl-terminal-line.show { animation: plTypeIn 0.15s ease forwards; }
+.pl-prompt { color: var(--text3); margin-right: 0.6em; }
+.pl-ok    { color: #5aaa80; }
+.pl-warn  { color: var(--gold1); }
+.pl-err   { color: var(--red2); }
+
+.pl-bar-wrap {
+  width: 340px; height: 2px; background: var(--border2);
+  position: relative; overflow: hidden; margin-bottom: 1.2rem;
+  opacity: 0; animation: plFadeIn 0.4s 1.2s ease forwards;
+}
+.pl-bar {
+  position: absolute; top: 0; left: 0; height: 100%;
+  background: linear-gradient(90deg, var(--ice5), var(--ice3));
+  width: 0%; transition: width 0.12s linear;
+  box-shadow: 0 0 8px rgba(80,144,184,0.4);
+}
+
+.pl-status {
+  font-family: var(--mono); font-size: 0.46rem; letter-spacing: 0.3em;
+  color: var(--text3); text-transform: uppercase;
+  opacity: 0; animation: plFadeIn 0.4s 1.3s ease forwards;
+}
+
+@keyframes plFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes plTypeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── FINALE SECTION ── */
+#finale {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.finale-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(138,24,24,0.07) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 10% 90%, rgba(42,104,136,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 35% 25% at 90% 10%, rgba(200,144,48,0.04) 0%, transparent 60%);
+}
+.finale-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 10%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 10%, transparent 70%);
+}
+.finale-content {
+  position: relative; z-index: 2; text-align: center;
+  max-width: 860px; padding: 4rem 2rem;
+}
+.finale-seal {
+  font-family: var(--mono); font-size: 0.46rem; letter-spacing: 0.6em;
+  color: var(--red2); border: 1px solid rgba(176,32,32,0.35);
+  padding: 0.3rem 1rem; text-transform: uppercase; display: inline-block;
+  margin-bottom: 3.5rem; background: rgba(138,24,24,0.05);
+  animation: pulseRed 4s ease-in-out infinite;
+}
+.finale-num {
+  font-family: var(--mono); font-size: 0.48rem; letter-spacing: 0.5em;
+  color: var(--text3); margin-bottom: 1.8rem; display: block;
+}
+.finale-star {
+  width: 60px; height: 60px; margin: 0 auto 2.5rem; opacity: 0.5;
+}
+.finale-h {
+  font-family: var(--display); font-weight: 900;
+  font-size: clamp(2rem, 6vw, 4.5rem);
+  color: var(--text0); line-height: 0.95; letter-spacing: 0.06em;
+  text-transform: uppercase; margin-bottom: 2.8rem;
+}
+.finale-h em { font-style: italic; color: var(--ice2); font-family: var(--serif); font-weight: 400; font-size: 0.55em; display: block; letter-spacing: 0.25em; margin-top: 0.6em; }
+.finale-rule { width: 1px; height: 60px; background: linear-gradient(to bottom, var(--ice5), transparent); margin: 0 auto 2.8rem; }
+.finale-manifeste {
+  font-family: var(--serif); font-size: clamp(1rem, 1.8vw, 1.2rem);
+  line-height: 1.95; color: var(--text1); margin-bottom: 3.5rem;
+  font-weight: 300;
+}
+.finale-manifeste strong { color: var(--text0); font-weight: 600; }
+.finale-manifeste em { color: var(--ice2); font-style: italic; }
+.finale-divider {
+  display: flex; align-items: center; gap: 1.5rem; margin: 0 auto 3rem;
+  max-width: 420px; justify-content: center;
+}
+.finale-divider-line { flex: 1; height: 1px; background: var(--border2); }
+.finale-divider-icon { color: var(--ice5); font-size: 0.7rem; flex-shrink: 0; }
+.finale-quote-wrap {
+  border: 1px solid var(--border2); padding: 2.5rem 3rem;
+  background: rgba(9,12,19,0.6); margin-bottom: 2.5rem; position: relative;
+}
+.finale-quote-wrap::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ice4), transparent);
+}
+.finale-quote {
+  font-family: var(--serif); font-size: clamp(1.05rem, 2vw, 1.35rem);
+  font-style: italic; line-height: 1.9; color: var(--ice1); margin-bottom: 1rem;
+}
+.finale-cite {
+  font-family: var(--mono); font-size: 0.48rem; letter-spacing: 0.25em;
+  color: var(--text3); text-transform: uppercase;
+}
+.finale-footer-row {
+  display: flex; align-items: center; justify-content: center; gap: 2rem; margin-top: 4rem;
+  flex-wrap: wrap;
+}
+.finale-stamp {
+  font-family: var(--mono); font-size: 0.44rem; letter-spacing: 0.3em;
+  color: var(--text3); border: 1px solid var(--border); padding: 0.3rem 0.8rem;
+  text-transform: uppercase;
+}
+.finale-corner { position: absolute; width: 24px; height: 24px; opacity: 0.2; }
+.finale-corner.tl { top: 2rem; left: 2.5rem; border-top: 1px solid var(--ice3); border-left: 1px solid var(--ice3); }
+.finale-corner.tr { top: 2rem; right: 2.5rem; border-top: 1px solid var(--ice3); border-right: 1px solid var(--ice3); }
+.finale-corner.bl { bottom: 2rem; left: 2.5rem; border-bottom: 1px solid var(--ice3); border-left: 1px solid var(--ice3); }
+.finale-corner.br { bottom: 2rem; right: 2.5rem; border-bottom: 1px solid var(--ice3); border-right: 1px solid var(--ice3); }
+
+
+/* ═══════════════════════════════════════════
+   ORBES FLOTTANTS
+═══════════════════════════════════════════ */
+.orb-container {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none; overflow: hidden;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0;
+  animation: orbFloat var(--duration, 20s) var(--delay, 0s) ease-in-out infinite alternate;
+}
+
+.orb-1 {
+  width: 600px; height: 600px;
+  top: -200px; left: -150px;
+  background: radial-gradient(circle, rgba(42,104,136,0.18) 0%, transparent 65%);
+  --duration: 22s; --delay: 0s;
+  animation: orbFloat1 22s ease-in-out infinite alternate, orbAppear 2s 0.5s forwards;
+}
+.orb-2 {
+  width: 500px; height: 500px;
+  bottom: -100px; right: -100px;
+  background: radial-gradient(circle, rgba(138,24,24,0.12) 0%, transparent 65%);
+  --duration: 26s; --delay: 3s;
+  animation: orbFloat2 26s 3s ease-in-out infinite alternate, orbAppear 2s 1s forwards;
+}
+.orb-3 {
+  width: 400px; height: 400px;
+  top: 50%; left: 60%;
+  background: radial-gradient(circle, rgba(42,104,136,0.10) 0%, transparent 65%);
+  --duration: 18s; --delay: 6s;
+  animation: orbFloat3 18s 6s ease-in-out infinite alternate, orbAppear 2s 1.5s forwards;
+}
+.orb-4 {
+  width: 350px; height: 350px;
+  top: 30%; left: 10%;
+  background: radial-gradient(circle, rgba(200,144,48,0.06) 0%, transparent 65%);
+  --duration: 30s; --delay: 2s;
+  animation: orbFloat4 30s 2s ease-in-out infinite alternate, orbAppear 2s 2s forwards;
+}
+
+@keyframes orbAppear { to { opacity: 1; } }
+@keyframes orbFloat1 { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(80px,60px) scale(1.1)} }
+@keyframes orbFloat2 { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(-70px,-50px) scale(0.9)} }
+@keyframes orbFloat3 { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(-40px,80px) scale(1.15)} }
+@keyframes orbFloat4 { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(60px,-40px) scale(0.95)} }
+
+/* ═══════════════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════════════ */
+#progress-bar {
+  position: fixed; top: 0; left: 0; height: 2px;
+  background: linear-gradient(90deg, var(--red2), var(--ice3), var(--gold1));
+  z-index: 1000; width: 0%;
+  transition: width 0.08s linear;
+  box-shadow: 0 0 8px rgba(80,144,184,0.4);
+}
+
+/* ═══════════════════════════════════════════
+   NAVBAR — GLASS MORPHISM
+═══════════════════════════════════════════ */
+#navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 800;
+  height: 62px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2.5rem;
+  transition: all 0.5s cubic-bezier(0.4,0,0.2,1);
+  border-bottom: 1px solid transparent;
+}
+
+#navbar.scrolled {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom-color: var(--border2);
+  box-shadow: 0 1px 0 var(--border), 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03);
+}
+
+#navbar.scrolled::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(80,144,184,0.15) 30%, rgba(80,144,184,0.15) 70%, transparent);
+}
+
+.nav-brand { display: flex; align-items: center; gap: 0.85rem; text-decoration: none; }
+
+.nav-star-svg { width: 26px; height: 26px; flex-shrink: 0; }
+
+.nav-text-block .nav-name {
+  font-family: var(--display); font-weight: 700; font-size: 0.65rem;
+  letter-spacing: 0.32em; color: var(--text0); display: block; text-transform: uppercase;
+}
+.nav-text-block .nav-sub {
+  font-family: var(--mono); font-size: 0.5rem; color: var(--text2);
+  letter-spacing: 0.15em; display: block; margin-top: 1px;
+}
+
+.nav-classif {
+  font-family: var(--mono); font-size: 0.48rem; letter-spacing: 0.2em;
+  color: var(--red2); border: 1px solid var(--red1); padding: 0.22rem 0.6rem;
+  text-transform: uppercase; animation: pulseRed 3s ease-in-out infinite;
+  background: rgba(138,24,24,0.06);
+}
+@keyframes pulseRed { 0%,100%{opacity:0.65} 50%{opacity:1;box-shadow:0 0 10px rgba(196,40,40,0.3)} }
+
+.nav-links { display: flex; align-items: center; gap: 0; list-style: none; }
+.nav-links a {
+  font-family: var(--mono); font-size: 0.54rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--text2); text-decoration: none;
+  padding: 0.45rem 0.75rem; position: relative; transition: color 0.3s;
+}
+.nav-links a::before {
+  content: ''; position: absolute; inset: 0;
+  border: 1px solid transparent; transition: border-color 0.3s, background 0.3s;
+}
+.nav-links a:hover { color: var(--text0); }
+.nav-links a:hover::before { border-color: var(--border2); background: rgba(80,144,184,0.06); }
+.nav-links a.active { color: var(--ice2); }
+.nav-links a.active::before { border-color: var(--border2); background: rgba(80,144,184,0.08); }
+
+/* ═══════════════════════════════════════════
+   GLITCH
+═══════════════════════════════════════════ */
+@keyframes glitch1 {
+  0%,94%,100% { clip-path:none; transform:translate(0); }
+  95% { clip-path:polygon(0 20%,100% 20%,100% 36%,0 36%); transform:translate(-4px,1px); }
+  96% { clip-path:polygon(0 58%,100% 58%,100% 72%,0 72%); transform:translate(4px,-2px); }
+  97% { clip-path:polygon(0 5%,100% 5%,100% 18%,0 18%); transform:translate(-2px,3px); }
+  98% { clip-path:none; transform:translate(0); }
+}
+@keyframes glitch2 {
+  0%,95%,100% { clip-path:none; transform:translate(0); opacity:0; }
+  96% { clip-path:polygon(0 40%,100% 40%,100% 58%,0 58%); transform:translate(5px,-2px); opacity:0.6; }
+  97% { clip-path:polygon(0 72%,100% 72%,100% 88%,0 88%); transform:translate(-4px,1px); opacity:0.4; }
+  99% { clip-path:none; opacity:0; }
+}
+.glitch-wrap { position:relative; display:inline-block; }
+.glitch-wrap::before, .glitch-wrap::after {
+  content:attr(data-text); position:absolute; inset:0;
+  font:inherit; color:inherit; pointer-events:none;
+}
+.glitch-wrap::before { color:var(--ice3); animation:glitch1 9s infinite; }
+.glitch-wrap::after { color:var(--red2); animation:glitch2 9s 0.4s infinite; }
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+#hero {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 65% 55% at 50% 52%, rgba(42,104,136,0.09) 0%, transparent 65%),
+    radial-gradient(ellipse 35% 28% at 12% 88%, rgba(138,24,24,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 88% 15%, rgba(42,104,136,0.05) 0%, transparent 60%);
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 15%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 15%, transparent 72%);
+}
+.hero-content {
+  position: relative; z-index: 2; text-align: center;
+  max-width: 980px; padding: 0 2rem;
+}
+
+.hero-stamp {
+  display: inline-block; font-family: var(--mono); font-size: 0.6rem;
+  letter-spacing: 0.5em; color: var(--red2); border: 2px solid rgba(176,32,32,0.5);
+  padding: 0.38rem 1.1rem; text-transform: uppercase; margin-bottom: 2.8rem;
+  transform: rotate(-1.5deg);
+  opacity: 0; animation: stampIn 0.7s 0.2s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  background: rgba(138,24,24,0.05);
+}
+@keyframes stampIn { from{opacity:0;transform:rotate(-1.5deg) scale(1.5)} to{opacity:1;transform:rotate(-1.5deg) scale(1)} }
+
+.hero-emblem { margin: 0 auto 2.2rem; width: 100px; height: 100px; opacity:0; animation: fadeUp 0.9s 0.5s ease forwards; }
+.hero-ring { animation: spin 32s linear infinite; transform-origin: center; }
+@keyframes spin { to{transform:rotate(360deg)} }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+.hero-pretitle {
+  font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.55em;
+  color: var(--text2); margin-bottom: 1.4rem;
+  opacity:0; animation: fadeUp 0.7s 0.8s ease forwards;
+}
+.hero-h1 {
+  font-family: var(--display); font-weight: 900; line-height: 0.92;
+  font-size: clamp(3.6rem,9.5vw,8rem); color: var(--text0); text-transform: uppercase;
+  opacity:0; animation: fadeUp 0.8s 1s ease forwards;
+  letter-spacing: 0.05em;
+}
+.hero-h1 .ru-line {
+  display: block; font-family: var(--serif); font-weight: 400; font-style: italic;
+  font-size: 0.21em; color: var(--ice2); letter-spacing: 0.55em; margin-top: 0.9em;
+}
+.hero-vline {
+  width: 1px; height: 65px;
+  background: linear-gradient(to bottom, var(--ice5), transparent);
+  margin: 2.2rem auto;
+  opacity:0; animation: fadeUp 0.8s 1.3s ease forwards;
+}
+.hero-tagline {
+  font-family: var(--serif); font-style: italic; font-size: 1.1rem;
+  color: var(--text2); font-weight: 300; max-width: 500px;
+  margin: 0 auto; line-height: 1.85;
+  opacity:0; animation: fadeUp 0.7s 1.5s ease forwards;
+}
+.scroll-hint {
+  position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  opacity:0; animation: fadeUp 0.8s 2s ease forwards;
+}
+.scroll-hint span { font-family: var(--mono); font-size: 0.48rem; letter-spacing: 0.4em; color: var(--text3); }
+.scroll-mouse { width: 20px; height: 32px; border: 1px solid var(--text3); border-radius: 10px; display:flex; justify-content:center; padding-top:5px; }
+.scroll-wheel { width: 3px; height: 7px; background: var(--ice4); border-radius: 2px; animation: mwheel 1.9s ease-in-out infinite; }
+@keyframes mwheel { 0%{transform:translateY(0);opacity:1} 100%{transform:translateY(8px);opacity:0} }
+
+.hero-corner { position:absolute; width:28px; height:28px; opacity:0.25; }
+.hero-corner.tl{top:2rem;left:2.5rem;border-top:1px solid var(--ice3);border-left:1px solid var(--ice3)}
+.hero-corner.tr{top:2rem;right:2.5rem;border-top:1px solid var(--ice3);border-right:1px solid var(--ice3)}
+.hero-corner.bl{bottom:2rem;left:2.5rem;border-bottom:1px solid var(--ice3);border-left:1px solid var(--ice3)}
+.hero-corner.br{bottom:2rem;right:2.5rem;border-bottom:1px solid var(--ice3);border-right:1px solid var(--ice3)}
+
+/* ═══════════════════════════════════════════
+   REVEAL ANIMATIONS
+═══════════════════════════════════════════ */
+.reveal { opacity:0; transform:translateY(28px); transition:opacity 0.9s ease, transform 0.9s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+.reveal-delay-1{transition-delay:0.1s} .reveal-delay-2{transition-delay:0.2s}
+.reveal-delay-3{transition-delay:0.3s} .reveal-delay-4{transition-delay:0.4s}
+.reveal-delay-5{transition-delay:0.5s} .reveal-delay-6{transition-delay:0.6s}
+
+/* ═══════════════════════════════════════════
+   SECTION SHELL
+═══════════════════════════════════════════ */
+.section-pad { padding: 8rem 0; position: relative; z-index: 1; }
+.section-pad.alt { background: var(--bg1); }
+.section-pad.alt2 { background: linear-gradient(180deg,var(--bg1),var(--bg0)); }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 3rem; }
+
+.hdiv { height:1px; background:linear-gradient(to right,transparent,var(--border2) 30%,var(--border2) 70%,transparent); position:relative; z-index:1; }
+
+.sec-eyebrow {
+  font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.6em;
+  color: var(--ice3); text-transform: uppercase;
+  display: flex; align-items: center; gap: 1rem; margin-bottom: 0.9rem;
+}
+.sec-eyebrow::after { content:''; height:1px; width:70px; background:var(--border3); }
+
+.sec-h2 {
+  font-family: var(--display); font-weight: 700; font-size: clamp(1.7rem,3vw,2.5rem);
+  color: var(--text0); line-height: 1.1; margin-bottom: 0.9rem;
+}
+.sec-h2 em { color:var(--ice2); font-style:normal; }
+
+.sec-rule { width:34px; height:2px; background:var(--ice5); margin: 1.3rem 0 3rem; }
+
+.sec-lead {
+  font-size: 1rem; line-height: 1.9; color: var(--text1);
+  max-width: 600px; font-weight: 300; font-family: var(--serif); font-size: 1.08rem;
+}
+
+/* ═══════════════════════════════════════════
+   HISTOIRE — CHAPTER TABS
+═══════════════════════════════════════════ */
+.ch-tabs-row {
+  display: flex; gap: 1px; background: var(--border); margin-top: 3.5rem; flex-wrap: wrap;
+}
+.ch-tab {
+  flex: 1; min-width: 160px; background: var(--bg2); border: none; cursor: pointer;
+  padding: 1rem 0.8rem; font-family: var(--mono); font-size: 0.5rem;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--text2);
+  transition: background 0.3s, color 0.3s; position: relative; text-align: center;
+}
+.ch-tab::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+  background:var(--ice4); transform:scaleX(0); transition:transform 0.3s;
+}
+.ch-tab.active { background:var(--bg4); color:var(--ice2); }
+.ch-tab.active::after { transform:scaleX(1); }
+.ch-tab:hover { background:var(--bg3); color:var(--text1); }
+
+.ch-panel { display:none; margin-top:1px; }
+.ch-panel.active { display:block; }
+
+.ch-layout {
+  display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 4.5rem; align-items: start;
+  background: var(--bg2); padding: 3.5rem;
+}
+
+.ch-body { color: var(--text1); }
+.ch-body h3 {
+  font-family: var(--display); font-weight: 700; font-size: 1.4rem;
+  color: var(--text0); margin-bottom: 0.5rem; line-height: 1.15;
+}
+.ch-body .ch-period {
+  font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.45em;
+  color: var(--ice3); text-transform: uppercase; margin-bottom: 2rem;
+  display: flex; align-items: center; gap: 0.7rem;
+}
+.ch-body .ch-period::after { content:''; height:1px; width:40px; background:var(--border3); }
+
+.ch-body p {
+  font-family: var(--serif); font-size: 1.05rem; line-height: 1.95;
+  color: var(--ice1); margin-bottom: 1.5rem; font-weight: 300;
+}
+.ch-body p:first-of-type::first-letter {
+  font-family: var(--display); font-weight: 900; font-size: 4.5rem;
+  color: var(--ice4); float: left; line-height: 0.72; margin: 0.08em 0.1em 0 0;
+}
+.ch-body p strong { color: var(--text0); font-weight: 600; }
+.ch-body p em { color: var(--ice2); font-style: italic; }
+
+.ch-info-block {
+  background: var(--bg3); border: 1px solid var(--border); padding: 1.4rem 1.6rem;
+  margin-top: 1.8rem;
+}
+.ch-info-block .ib-label {
+  font-family: var(--mono); font-size: 0.48rem; letter-spacing: 0.5em;
+  color: var(--text3); text-transform: uppercase; margin-bottom: 0.5rem;
+}
+.ch-info-block .ib-val {
+  font-family: var(--serif); font-style: italic; font-size: 0.95rem;
+  color: var(--text1); line-height: 1.7;
+}
+
+.ch-cite {
+  border-left: 2px solid var(--ice5); padding: 1.2rem 1.4rem;
+  background: rgba(42,104,136,0.04); margin-top: 1.6rem;
+}
+.ch-cite p {
+  font-family: var(--serif); font-style: italic; font-size: 0.9rem;
+  line-height: 1.8; color: var(--text1); margin: 0 0 0.7rem;
+}
+.ch-cite p::first-letter { font-size: inherit; float: none; color: inherit; font-weight: inherit; }
+.ch-cite cite {
+  font-family: var(--mono); font-size: 0.48rem; letter-spacing: 0.4em;
+  color: var(--ice3); font-style: normal; text-transform: uppercase;
+}
+
+/* Sidebar chapter */
+.ch-sidebar {}
+.ch-stat-stack { display:flex; flex-direction:column; gap:1px; }
+.ch-stat {
+  background: var(--bg3); border: 1px solid var(--border);
+  padding: 1.3rem 1.5rem; position: relative; overflow: hidden;
+  transition: border-color 0.3s, background 0.3s;
+}
+.ch-stat::before {
+  content:''; position:absolute; top:0; left:0; width:2px; height:100%;
+  background:var(--ice4); transform:scaleY(0); transform-origin:bottom; transition:transform 0.4s;
+}
+.ch-stat:hover { border-color:var(--border2); background:var(--bg4); }
+.ch-stat:hover::before { transform:scaleY(1); }
+.ch-stat .val { font-family:var(--display); font-weight:700; font-size:2.2rem; color:var(--ice4); line-height:1; margin-bottom:0.25rem; }
+.ch-stat .lbl { font-family:var(--mono); font-size:0.52rem; letter-spacing:0.25em; color:var(--text2); text-transform:uppercase; }
+
+.ch-timeline { margin-top:1px; }
+.ch-tl-item {
+  background:var(--bg3); border:1px solid var(--border);
+  padding:1rem 1.5rem; margin-bottom:1px;
+  display:grid; grid-template-columns:auto 1fr; gap:1rem; align-items:start;
+}
+.ch-tl-yr { font-family:var(--display); font-weight:700; font-size:0.7rem; color:var(--ice3); white-space:nowrap; padding-top:0.1rem; }
+.ch-tl-txt { font-family:var(--serif); font-size:0.88rem; line-height:1.7; color:var(--text1); }
+
+
+/* ═══════════════════════════════════════════
+   LORE
+═══════════════════════════════════════════ */
+.lore-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); margin-top:3.5rem; }
+
+.lore-card {
+  background:var(--bg2); padding:3rem; position:relative; overflow:hidden;
+  transition:background 0.4s;
+}
+.lore-card:hover { background:var(--bg3); }
+.lore-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, var(--ice5), var(--ice3), transparent);
+  transform:scaleX(0); transform-origin:left; transition:transform 0.5s ease;
+}
+.lore-card:hover::before { transform:scaleX(1); }
+
+.lore-card .lc-num { font-family:var(--mono); font-size:0.48rem; letter-spacing:0.5em; color:var(--text3); margin-bottom:0.8rem; }
+.lore-card .lc-icon { font-size:2rem; opacity:0.4; margin-bottom:1rem; display:block; }
+.lore-card .lc-title { font-family:var(--display); font-weight:700; font-size:1rem; color:var(--text0); margin-bottom:1rem; letter-spacing:0.05em; line-height:1.2; }
+.lore-card .lc-body { font-family:var(--serif); font-size:1rem; line-height:1.9; color:var(--text1); font-weight:300; }
+.lore-card .lc-body strong { color:var(--text0); font-weight:600; }
+
+.lore-loi-list { list-style:none; margin-top:1rem; }
+.lore-loi-list li {
+  padding:0.7rem 0; border-bottom:1px solid var(--border);
+  font-family:var(--serif); font-size:0.92rem; color:var(--text1); line-height:1.6;
+  display:grid; grid-template-columns:auto 1fr; gap:0.8rem;
+}
+.lore-loi-list li:last-child { border-bottom:none; }
+.loi-num { font-family:var(--mono); font-size:0.52rem; color:var(--ice3); letter-spacing:0.2em; padding-top:0.2rem; font-weight:400; }
+.lore-loi-list li.secret { opacity:0.35; font-style:italic; }
+
+.lore-hier { margin-top:1.5rem; }
+.lore-hier-row {
+  display:flex; align-items:center; gap:1rem;
+  padding:0.9rem 1.2rem; margin-bottom:1px; background:var(--bg3); border:1px solid var(--border);
+  transition:background 0.3s;
+}
+.lore-hier-row:hover { background:var(--bg4); }
+.lhr-rank { font-family:var(--mono); font-size:0.48rem; letter-spacing:0.3em; color:var(--ice3); min-width:4rem; }
+.lhr-name { font-family:var(--display); font-weight:700; font-size:0.85rem; color:var(--text0); }
+.lhr-ru { font-family:var(--serif); font-style:italic; font-size:0.8rem; color:var(--ice2); margin-left:auto; }
+.lhr-desc { font-family:var(--mono); font-size:0.48rem; color:var(--text2); letter-spacing:0.1em; width:100%; margin-top:0.3rem; }
+
+/* ═══════════════════════════════════════════
+   AMBITIONS
+═══════════════════════════════════════════ */
+.ambitions-phases {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+  background:var(--border); margin-top:3.5rem;
+}
+.phase-card {
+  background:var(--bg2); padding:2.2rem; position:relative; overflow:hidden;
+  transition:background 0.4s;
+}
+.phase-card:hover { background:var(--bg3); }
+.phase-card.active-phase { background:var(--bg3); }
+.phase-card.active-phase::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg, var(--ice3), var(--gold1));
+}
+.phase-card .ph-year { font-family:var(--display); font-weight:700; font-size:2rem; color:rgba(80,144,184,0.12); position:absolute; top:1rem; right:1.5rem; line-height:1; }
+.phase-card .ph-num { font-family:var(--mono); font-size:0.48rem; letter-spacing:0.5em; color:var(--text3); margin-bottom:0.6rem; }
+.phase-card .ph-title { font-family:var(--display); font-weight:700; font-size:0.9rem; color:var(--text0); margin-bottom:0.5rem; line-height:1.2; }
+.phase-card .ph-period { font-family:var(--mono); font-size:0.5rem; letter-spacing:0.35em; color:var(--ice3); margin-bottom:1rem; }
+.phase-card .ph-body { font-family:var(--serif); font-size:0.92rem; line-height:1.8; color:var(--text1); }
+.phase-badge {
+  display:inline-block; margin-top:1rem; font-family:var(--mono); font-size:0.46rem;
+  letter-spacing:0.3em; text-transform:uppercase; padding:0.2rem 0.6rem;
+  border:1px solid var(--ice5); color:var(--ice3); background:rgba(80,144,184,0.05);
+}
+.phase-badge.en-cours { border-color:rgba(90,170,128,0.4); color:#5aaa80; background:rgba(90,170,128,0.04); }
+.phase-badge.futur { border-color:var(--text3); color:var(--text3); }
+
+.ambitions-projets { margin-top:1px; display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); }
+.projet-card {
+  background:var(--bg2); padding:3rem; position:relative; overflow:hidden;
+  transition:background 0.4s;
+}
+.projet-card:hover { background:var(--bg3); }
+.projet-card .pr-alpha {
+  font-family:var(--display); font-weight:900; font-size:5rem;
+  color:rgba(80,144,184,0.05); position:absolute; bottom:1rem; right:2rem; line-height:1;
+}
+.projet-card .pr-code { font-family:var(--mono); font-size:0.52rem; letter-spacing:0.5em; color:var(--gold1); margin-bottom:0.6rem; text-transform:uppercase; }
+.projet-card .pr-title { font-family:var(--display); font-weight:700; font-size:1.1rem; color:var(--text0); margin-bottom:1.5rem; line-height:1.2; }
+.projet-card .pr-body { font-family:var(--serif); font-size:1.02rem; line-height:1.92; color:var(--text1); }
+.projet-card .pr-body p { margin-bottom:1.2rem; }
+.projet-card .pr-body strong { color:var(--text0); font-weight:600; }
+.pr-items { list-style:none; margin-top:1.2rem; }
+.pr-items li {
+  padding:0.5rem 0 0.5rem 1.2rem; border-bottom:1px solid var(--border);
+  font-family:var(--serif); font-size:0.9rem; color:var(--text1); line-height:1.5;
+  position:relative;
+}
+.pr-items li::before { content:''; position:absolute; left:0; top:54%; width:4px; height:4px; border-radius:50%; background:var(--ice4); transform:translateY(-50%); }
+.pr-items li:last-child { border-bottom:none; }
+
+/* ═══════════════════════════════════════════
+   FACETTES
+═══════════════════════════════════════════ */
+.facettes-new {
+  display:grid; grid-template-columns:1fr 1fr;
+  border:1px solid var(--border2); overflow:hidden;
+  margin-top:3.5rem;
+}
+.facette-col { position:relative; display:flex; flex-direction:column; }
+.facette-col + .facette-col { border-left:1px solid var(--border2); }
+
+.fc-header { padding:1.8rem 2.5rem 1.6rem; border-bottom:1px solid var(--border2); }
+.fc-header-legal  { background:rgba(90,170,128,0.04); border-top:2px solid rgba(90,170,128,0.4); }
+.fc-header-classif{ background:rgba(176,32,32,0.05);  border-top:2px solid rgba(176,32,32,0.4); }
+
+.fc-badge {
+  display:inline-flex; align-items:center; gap:0.45rem;
+  font-family:var(--mono); font-size:0.44rem; letter-spacing:0.38em;
+  text-transform:uppercase; padding:0.22rem 0.6rem; border:1px solid; margin-bottom:1rem;
+}
+.fc-badge-legal   { color:#5aaa80; border-color:rgba(90,170,128,0.35); background:rgba(90,170,128,0.05); }
+.fc-badge-classif { color:var(--red2); border-color:rgba(176,32,32,0.4); background:rgba(176,32,32,0.05); }
+.fc-dot { width:5px; height:5px; border-radius:50%; background:currentColor; }
+
+.fc-title { font-family:var(--display); font-weight:900; font-size:1.35rem; color:var(--text0); letter-spacing:0.03em; line-height:1.1; }
+.fc-sub   { font-family:var(--mono); font-size:0.46rem; letter-spacing:0.28em; color:var(--text3); text-transform:uppercase; display:block; margin-top:0.3rem; }
+
+.fc-lead {
+  padding:1.4rem 2.5rem; font-family:var(--serif); font-size:0.95rem;
+  line-height:1.85; color:var(--text2); border-bottom:1px solid var(--border); font-style:italic;
+}
+
+.fc-rows { list-style:none; flex:1; }
+.fc-row {
+  display:grid; grid-template-columns:2.5rem 1fr;
+  border-bottom:1px solid var(--border); transition:background 0.2s;
+}
+.fc-row:last-child { border-bottom:none; }
+.fc-row:hover { background:rgba(184,207,224,0.03); }
+
+.fc-row-icon {
+  display:flex; align-items:flex-start; justify-content:center;
+  padding-top:1rem; font-size:0.6rem;
+  border-right:1px solid var(--border);
+}
+.icon-legal   { color:rgba(90,170,128,0.5); }
+.icon-classif { color:rgba(176,32,32,0.45); }
+
+.fc-row-content { padding:0.9rem 1.2rem 0.9rem 1rem; }
+.fc-row-label {
+  font-family:var(--mono); font-size:0.44rem; letter-spacing:0.2em;
+  text-transform:uppercase; margin-bottom:0.25rem;
+}
+.label-legal   { color:rgba(90,170,128,0.7); }
+.label-classif { color:rgba(200,60,60,0.7); }
+
+.fc-row-text { font-family:var(--serif); font-size:0.92rem; line-height:1.72; color:var(--text1); }
+.fc-row-text strong { color:var(--text0); font-weight:600; }
+
+.fc-foot {
+  padding:1.1rem 2.5rem; font-family:var(--mono); font-size:0.44rem;
+  letter-spacing:0.14em; line-height:1.8; color:var(--text3);
+  border-top:1px solid var(--border); font-style:italic; margin-top:auto;
+}
+.fc-foot-legal   { border-left:2px solid rgba(90,170,128,0.35); background:rgba(90,170,128,0.02); }
+.fc-foot-classif { border-left:2px solid rgba(176,32,32,0.3);  background:rgba(176,32,32,0.02); }
+
+.zone-grise-cards { display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--border); margin-top:3.5rem; }
+.zg-card {
+  background:var(--bg2); padding:2.5rem; position:relative; transition:background 0.3s;
+}
+.zg-card:hover { background:var(--bg3); }
+.zg-card .zg-icon { font-size:1.4rem; opacity:0.4; margin-bottom:0.8rem; }
+.zg-card .zg-title { font-family:var(--display); font-weight:700; font-size:0.9rem; color:var(--text0); margin-bottom:0.8rem; }
+.zg-card .zg-body { font-family:var(--serif); font-size:0.95rem; line-height:1.85; color:var(--text1); }
+.zg-badge {
+  display:inline-block; margin-top:1rem; font-family:var(--mono); font-size:0.46rem;
+  letter-spacing:0.28em; text-transform:uppercase; padding:0.18rem 0.55rem;
+  border:1px solid var(--gold1); color:var(--gold1); background:var(--gold3);
+}
+
+/* ═══════════════════════════════════════════
+   VISION
+═══════════════════════════════════════════ */
+.vision-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:1px;
+  background:var(--border); margin-top:3.5rem;
+}
+.vision-card {
+  background:var(--bg2); padding:2.8rem; position:relative; overflow:hidden;
+  transition:background 0.4s;
+}
+.vision-card:hover { background:var(--bg3); }
+.vision-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, var(--ice5), var(--ice3), transparent);
+  transform:scaleX(0); transform-origin:left; transition:transform 0.5s ease;
+}
+.vision-card:hover::before { transform:scaleX(1); }
+.vc-num { font-family:var(--mono); font-size:0.48rem; letter-spacing:0.5em; color:var(--text3); margin-bottom:0.7rem; }
+.vc-icon { font-size:1.6rem; opacity:0.35; margin-bottom:1rem; display:block; }
+.vc-title { font-family:var(--display); font-weight:700; font-size:1rem; color:var(--text0); margin-bottom:1rem; letter-spacing:0.05em; line-height:1.2; }
+.vc-body { font-family:var(--serif); font-size:1rem; line-height:1.9; color:var(--text1); }
+.vc-body strong { color:var(--text0); font-weight:600; }
+.vc-tag {
+  display:inline-block; margin-top:1.2rem; font-family:var(--mono);
+  font-size:0.46rem; letter-spacing:0.3em; text-transform:uppercase;
+  color:var(--ice3); border:1px solid var(--ice5); padding:0.2rem 0.6rem;
+  background:rgba(80,144,184,0.05);
+}
+
+.vision-manifesto {
+  background:var(--bg2); border:1px solid var(--border); padding:3rem; margin-top:1px;
+  display:grid; grid-template-columns:1fr 2fr; gap:3rem; align-items:start;
+}
+.vm-label { font-family:var(--mono); font-size:0.48rem; letter-spacing:0.5em; color:var(--gold1); text-transform:uppercase; margin-bottom:1rem; }
+.vm-title { font-family:var(--display); font-weight:900; font-size:1.5rem; color:var(--text0); line-height:1.15; }
+.vm-body { font-family:var(--serif); font-size:1.05rem; line-height:1.95; color:var(--ice1); }
+.vm-body p { margin-bottom:1.3rem; }
+.vm-body strong { color:var(--text0); font-weight:600; }
+.vm-body em { color:var(--ice2); font-style:italic; }
+
+/* ═══════════════════════════════════════════
+   ZSG — SERVICE SÉCURITÉ
+═══════════════════════════════════════════ */
+.zsg-hero {
+  background: var(--bg2); border:1px solid var(--border);
+  padding:4rem; margin-top:3.5rem;
+  display:grid; grid-template-columns:1.2fr 0.8fr; gap:4rem; align-items:start;
+  position:relative; overflow:hidden;
+}
+.zsg-hero::before {
+  content:'ZSG'; position:absolute; bottom:-1.5rem; right:2rem;
+  font-family:var(--display); font-weight:900; font-size:8rem; color:rgba(80,144,184,0.04);
+  line-height:1; pointer-events:none;
+}
+.zsg-badge-row { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+.zsg-badge {
+  font-family:var(--mono); font-size:0.46rem; letter-spacing:0.3em; text-transform:uppercase;
+  padding:0.25rem 0.65rem; border:1px solid;
+}
+.zsgb-active { color:#5aaa80; border-color:rgba(90,170,128,0.4); background:rgba(90,170,128,0.05); }
+.zsgb-legal { color:var(--ice3); border-color:rgba(80,144,184,0.4); background:rgba(80,144,184,0.05); }
+.zsgb-gov { color:var(--gold1); border-color:rgba(200,144,48,0.4); background:var(--gold3); }
+
+.zsg-hero h3 { font-family:var(--display); font-weight:900; font-size:2rem; color:var(--text0); line-height:1.1; margin-bottom:0.4rem; }
+.zsg-hero .zsg-sub { font-family:var(--mono); font-size:0.52rem; letter-spacing:0.3em; color:var(--text3); text-transform:uppercase; margin-bottom:1.8rem; }
+.zsg-hero p { font-family:var(--serif); font-size:1.02rem; line-height:1.92; color:var(--text1); margin-bottom:1.3rem; }
+
+.zsg-kpi-col { display:flex; flex-direction:column; gap:1px; }
+.zsg-kpi {
+  background:var(--bg3); border:1px solid var(--border); padding:1.4rem 1.6rem;
+  position:relative; overflow:hidden; transition:border-color 0.3s, background 0.3s;
+}
+.zsg-kpi:hover { border-color:var(--border2); background:var(--bg4); }
+.zsg-kpi::before {
+  content:''; position:absolute; top:0; left:0; width:2px; height:100%;
+  background:var(--ice4); transform:scaleY(0); transform-origin:bottom; transition:transform 0.4s;
+}
+.zsg-kpi:hover::before { transform:scaleY(1); }
+.zsg-kpi .kv { font-family:var(--display); font-weight:700; font-size:2.2rem; color:var(--ice4); line-height:1; margin-bottom:0.25rem; }
+.zsg-kpi .kl { font-family:var(--mono); font-size:0.5rem; letter-spacing:0.25em; color:var(--text2); text-transform:uppercase; }
+
+.zsg-services { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); margin-top:1px; }
+.zsg-svc {
+  background:var(--bg2); padding:2.2rem; position:relative; overflow:hidden; transition:background 0.4s;
+}
+.zsg-svc:hover { background:var(--bg3); }
+.zsg-svc::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, transparent, var(--ice5), transparent);
+  transform:scaleX(0); transition:transform 0.5s ease;
+}
+.zsg-svc:hover::after { transform:scaleX(1); }
+.zsvc-icon { font-size:1.4rem; opacity:0.4; margin-bottom:0.9rem; display:block; }
+.zsvc-title { font-family:var(--display); font-weight:700; font-size:0.88rem; color:var(--text0); margin-bottom:0.8rem; letter-spacing:0.04em; }
+.zsvc-body { font-family:var(--serif); font-size:0.93rem; line-height:1.85; color:var(--text1); }
+.zsvc-tag {
+  display:inline-block; margin-top:1rem; font-family:var(--mono); font-size:0.44rem;
+  letter-spacing:0.28em; text-transform:uppercase; padding:0.18rem 0.55rem;
+  border:1px solid var(--ice5); color:var(--ice3); background:rgba(80,144,184,0.04);
+}
+
+.zsg-avantage {
+  background:var(--bg2); border:1px solid var(--border); padding:3rem; margin-top:1px;
+  display:grid; grid-template-columns:1fr 1fr; gap:3rem;
+}
+.zav-title { font-family:var(--display); font-weight:700; font-size:1rem; color:var(--text0); margin-bottom:0.8rem; }
+.zav-body { font-family:var(--serif); font-size:0.98rem; line-height:1.88; color:var(--text1); }
+.zav-body strong { color:var(--text0); font-weight:600; }
+.zav-list { list-style:none; margin-top:1rem; }
+.zav-list li {
+  padding:0.6rem 0 0.6rem 1.2rem; border-bottom:1px solid var(--border);
+  font-family:var(--serif); font-size:0.92rem; color:var(--text1); line-height:1.5;
+  position:relative;
+}
+.zav-list li::before { content:''; position:absolute; left:0; top:54%; width:4px; height:4px; border-radius:50%; background:var(--ice4); transform:translateY(-50%); }
+.zav-list li:last-child { border-bottom:none; }
+
+/* ═══════════════════════════════════════════
+   ACTIVITÉS
+═══════════════════════════════════════════ */
+.act-tabs-row {
+  display:flex; gap:1px; background:var(--border); margin-top:3.5rem; flex-wrap:wrap;
+}
+.act-tab {
+  flex:1; min-width:130px; background:var(--bg2); border:none; cursor:pointer;
+  padding:1rem 0.8rem; font-family:var(--mono); font-size:0.5rem;
+  letter-spacing:0.2em; text-transform:uppercase; color:var(--text2);
+  transition:background 0.3s, color 0.3s; position:relative; text-align:center;
+}
+.act-tab::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+  background:var(--ice4); transform:scaleX(0); transition:transform 0.3s;
+}
+.act-tab.active { background:var(--bg4); color:var(--ice2); }
+.act-tab.active::after { transform:scaleX(1); }
+.act-tab:hover { background:var(--bg3); color:var(--text1); }
+
+.act-panel { display:none; margin-top:1px; }
+.act-panel.active { display:block; }
+
+.act-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); }
+.act-card {
+  background:var(--bg2); padding:2.4rem 2.8rem; position:relative; overflow:hidden; transition:background 0.3s;
+}
+.act-card:hover { background:var(--bg3); }
+.act-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, var(--ice5), var(--ice3), transparent);
+  transform:scaleX(0); transform-origin:left; transition:transform 0.5s ease;
+}
+.act-card:hover::before { transform:scaleX(1); }
+
+.act-level {
+  display:flex; align-items:center; gap:0.5rem;
+  font-family:var(--mono); font-size:0.48rem; letter-spacing:0.4em;
+  text-transform:uppercase; margin-bottom:0.7rem;
+}
+.level-dot { width:6px; height:6px; border-radius:50%; }
+.lvl-legal .level-dot { background:#5aaa80; box-shadow:0 0 6px rgba(90,170,128,0.5); }
+.lvl-legal { color:#5aaa80; }
+.lvl-mixed .level-dot { background:var(--gold1); box-shadow:0 0 6px rgba(200,144,48,0.5); }
+.lvl-mixed { color:var(--gold1); }
+.lvl-class .level-dot { background:var(--red2); box-shadow:0 0 6px rgba(176,32,32,0.5); }
+.lvl-class { color:var(--red2); }
+
+.act-title { font-family:var(--display); font-weight:700; font-size:1rem; color:var(--text0); margin-bottom:0.35rem; }
+.act-location { font-family:var(--mono); font-size:0.5rem; letter-spacing:0.22em; color:var(--text3); margin-bottom:1rem; }
+.act-body { font-family:var(--serif); font-size:0.97rem; line-height:1.88; color:var(--text1); }
+.act-body strong { color:var(--text0); font-weight:600; }
+
+/* Scene cards */
+.scene-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); }
+.scene-card {
+  background:var(--bg2); padding:2.4rem 2.8rem; border-left:2px solid var(--ice5);
+  position:relative; transition:background 0.3s;
+}
+.scene-card:hover { background:var(--bg3); }
+.scene-label { font-family:var(--mono); font-size:0.48rem; letter-spacing:0.5em; text-transform:uppercase; color:var(--gold1); margin-bottom:0.6rem; }
+.scene-title { font-family:var(--display); font-weight:700; font-size:0.95rem; color:var(--text0); margin-bottom:0.9rem; }
+.scene-body { font-family:var(--serif); font-size:0.95rem; line-height:1.88; color:var(--text1); }
+.scene-actors { margin-top:1rem; font-family:var(--mono); font-size:0.48rem; letter-spacing:0.18em; color:var(--text3); }
+
+/* ═══════════════════════════════════════════
+   OBJECTIFS
+═══════════════════════════════════════════ */
+.obj-split { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); margin-top:3.5rem; }
+.obj-col { background:var(--bg2); padding:3rem; }
+.obj-col-title { font-family:var(--display); font-weight:700; font-size:0.85rem; color:var(--text0); margin-bottom:0.3rem; letter-spacing:0.05em; }
+.obj-col-period { font-family:var(--mono); font-size:0.48rem; letter-spacing:0.4em; color:var(--ice3); text-transform:uppercase; margin-bottom:1.8rem; }
+.obj-list { list-style:none; }
+.obj-list li {
+  padding:0.75rem 0 0.75rem 1.3rem; border-bottom:1px solid var(--border);
+  font-family:var(--serif); font-size:0.97rem; color:var(--text1); line-height:1.6;
+  position:relative;
+}
+.obj-list li:last-child { border-bottom:none; }
+.obj-list li::before { content:''; position:absolute; left:0; top:50%; width:5px; height:5px; border-radius:50%; background:var(--ice4); transform:translateY(-50%); }
+.obj-list li.done::before { background:#5aaa80; box-shadow:0 0 5px rgba(90,170,128,0.4); }
+.obj-list li.done { color:var(--text2); }
+.obj-list li.wip::before { background:var(--gold1); box-shadow:0 0 5px rgba(200,144,48,0.4); }
+.obj-list li.wip { font-style:italic; }
+
+.obj-long {
+  background:var(--bg2); border:1px solid var(--border); padding:3rem; margin-top:1px;
+  display:grid; grid-template-columns:0.4fr 1fr; gap:3rem; align-items:start;
+}
+.obj-long-label { font-family:var(--mono); font-size:0.48rem; letter-spacing:0.5em; color:var(--gold1); text-transform:uppercase; margin-bottom:0.8rem; }
+.obj-long-title { font-family:var(--display); font-weight:900; font-size:1.4rem; color:var(--text0); line-height:1.15; }
+.obj-long-body { font-family:var(--serif); font-size:1.02rem; line-height:1.92; color:var(--ice1); }
+.obj-long-body p { margin-bottom:1.2rem; }
+.obj-long-body strong { color:var(--text0); font-weight:600; }
+
+.obj-leads { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); margin-top:1px; }
+.obj-lead-card {
+  background:var(--bg2); padding:2rem; position:relative; overflow:hidden; transition:background 0.3s;
+}
+.obj-lead-card:hover { background:var(--bg3); }
+.obj-lead-card::after { content:''; position:absolute; bottom:0; right:0; width:20px; height:20px; border-right:1px solid var(--text3); border-bottom:1px solid var(--text3); opacity:0; transition:opacity 0.3s; }
+.obj-lead-card:hover::after { opacity:1; }
+.olc-status { display:flex; align-items:center; gap:0.5rem; font-family:var(--mono); font-size:0.46rem; letter-spacing:0.4em; text-transform:uppercase; margin-bottom:0.7rem; }
+.olc-dot { width:5px; height:5px; border-radius:50%; }
+.ols-actif { color:#5aaa80; }
+.ols-actif .olc-dot { background:#5aaa80; box-shadow:0 0 5px rgba(90,170,128,0.5); }
+.ols-dev { color:var(--ice2); }
+.ols-dev .olc-dot { background:var(--ice3); }
+.ols-plan { color:var(--text2); }
+.ols-plan .olc-dot { background:var(--text2); }
+.olc-title { font-family:var(--display); font-weight:700; font-size:0.88rem; color:var(--text0); margin-bottom:0.3rem; line-height:1.25; }
+.olc-resp { font-family:var(--mono); font-size:0.48rem; color:var(--text3); letter-spacing:0.12em; margin-bottom:0.8rem; font-style:italic; }
+.olc-desc { font-family:var(--serif); font-size:0.88rem; line-height:1.8; color:var(--text1); }
+
+/* ═══════════════════════════════════════════
+   MEMBRES
+═══════════════════════════════════════════ */
+.membres-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); margin-top:4rem; }
+.membre-card {
+  background:var(--bg2); padding:2.2rem; position:relative; overflow:hidden; transition:background 0.4s;
+}
+.membre-card::after {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse 80% 50% at 50% 0%, rgba(80,144,184,0.07),transparent);
+  opacity:0; transition:opacity 0.5s;
+}
+.membre-card:hover { background:var(--bg3); }
+.membre-card:hover::after { opacity:1; }
+.membre-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,var(--ice5),var(--ice3),var(--ice5));
+  transform:scaleX(0); transition:transform 0.5s ease;
+}
+.membre-card:hover::before { transform:scaleX(1); }
+
+.m-id { font-family:var(--mono); font-size:0.46rem; letter-spacing:0.45em; color:var(--text3); margin-bottom:0.7rem; text-transform:uppercase; }
+.m-rang { font-family:var(--mono); font-size:0.48rem; letter-spacing:0.35em; color:var(--ice3); text-transform:uppercase; margin-bottom:0.55rem; display:flex; align-items:center; gap:0.4rem; }
+.m-nom { font-family:var(--display); font-weight:700; font-size:1.15rem; color:var(--text0); line-height:1.15; margin-bottom:0.15rem; }
+.m-alias { font-family:var(--serif); font-style:italic; color:var(--ice2); font-size:0.88rem; margin-bottom:1.2rem; display:block; }
+.m-sep { width:100%; height:1px; background:var(--border); margin-bottom:1.2rem; }
+.m-traits { display:flex; flex-wrap:wrap; gap:0.3rem; margin-bottom:1.2rem; }
+.m-trait { font-family:var(--mono); font-size:0.46rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text3); border:1px solid var(--border2); padding:0.18rem 0.45rem; }
+.m-bio { font-family:var(--serif); font-size:0.9rem; line-height:1.85; color:var(--text1); margin-bottom:1.2rem; }
+.m-goal { border-top:1px solid var(--border); padding-top:1rem; }
+.m-goal-label { font-family:var(--mono); font-size:0.46rem; letter-spacing:0.45em; text-transform:uppercase; color:var(--red2); margin-bottom:0.35rem; }
+.m-goal-text { font-family:var(--serif); font-style:italic; font-size:0.88rem; line-height:1.7; color:var(--text2); }
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer {
+  border-top:1px solid var(--border); background:var(--bg1);
+  padding:3rem 3rem; display:flex; align-items:center; justify-content:space-between;
+  position:relative; z-index:1;
+}
+.ft-brand { display:flex; align-items:center; gap:1rem; }
+.ft-name { font-family:var(--display); font-weight:700; font-size:0.7rem; letter-spacing:0.3em; color:var(--text2); text-transform:uppercase; display:block; }
+.ft-sub { font-family:var(--mono); font-size:0.48rem; letter-spacing:0.4em; color:var(--text3); display:block; margin-top:2px; font-style:italic; }
+.ft-center { text-align:center; }
+.ft-motto { font-family:var(--serif); font-style:italic; color:var(--text2); font-size:1rem; }
+.ft-motto-fr { font-family:var(--mono); font-size:0.48rem; letter-spacing:0.4em; color:var(--text3); text-transform:uppercase; display:block; margin-top:0.4rem; }
+.ft-right { text-align:right; font-family:var(--mono); font-size:0.48rem; letter-spacing:0.2em; color:var(--text3); text-transform:uppercase; line-height:2.2; }
+
+</style>
+</head>
+<body>
+
+<!-- ORBES -->
+
+<!-- ════════ PRELOADER ════════ -->
+<div id="preloader">
+  <div class="pl-corner tl"></div>
+  <div class="pl-corner tr"></div>
+  <div class="pl-corner bl"></div>
+  <div class="pl-corner br"></div>
+
+  <div class="pl-classif">⬛ &nbsp; Connexion Sécurisée — Niveau Gamma &nbsp; ⬛</div>
+
+  <svg class="pl-emblem" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="55" cy="55" r="53" stroke="rgba(80,144,184,0.12)" stroke-width="0.5"/>
+    <g class="pl-ring-spin">
+      <circle cx="55" cy="55" r="48" stroke="rgba(80,144,184,0.2)" stroke-width="0.5" stroke-dasharray="4 8"/>
+    </g>
+    <circle cx="55" cy="55" r="40" stroke="rgba(80,144,184,0.08)" stroke-width="0.5"/>
+    <polygon points="55,12 62,34 85,34 67,47 74,70 55,57 36,70 43,47 25,34 48,34"
+             fill="rgba(42,90,120,0.12)" stroke="rgba(80,144,184,0.55)" stroke-width="1"/>
+    <circle cx="55" cy="55" r="7" fill="rgba(80,144,184,0.25)" stroke="rgba(80,144,184,0.5)" stroke-width="0.5"/>
+    <circle cx="55" cy="55" r="3" fill="#5090b8"/>
+  </svg>
+
+  <div class="pl-title">Chernaya Zvezda</div>
+  <div class="pl-sub">Звёздный Протокол — Accès Restreint</div>
+
+  <div class="pl-terminal" id="plTerminal">
+    <span class="pl-terminal-line" data-delay="0"><span class="pl-prompt">&gt;</span> <span class="pl-warn">INIT</span> — Protocole d'authentification niveau Gamma...</span>
+    <span class="pl-terminal-line" data-delay="400"><span class="pl-prompt">&gt;</span> Vérification de l'empreinte numérique <span class="pl-ok">[ OK ]</span></span>
+    <span class="pl-terminal-line" data-delay="800"><span class="pl-prompt">&gt;</span> Tunnel chiffré établi — AES-256 <span class="pl-ok">[ ACTIF ]</span></span>
+    <span class="pl-terminal-line" data-delay="1200"><span class="pl-prompt">&gt;</span> Identité validée — Cercle Interne <span class="pl-ok">[ CONFIRMÉ ]</span></span>
+    <span class="pl-terminal-line" data-delay="1600"><span class="pl-prompt">&gt;</span> Chargement du dossier <span class="pl-warn">N°001</span> en cours...</span>
+    <span class="pl-terminal-line" data-delay="2000"><span class="pl-prompt">&gt;</span> <span class="pl-warn">AVERTISSEMENT</span> — Toute divulgation est passible de sanctions.</span>
+    <span class="pl-terminal-line" data-delay="2500"><span class="pl-prompt">&gt;</span> Accès autorisé. <span class="pl-ok">Bienvenue, Zvezda.</span></span>
+  </div>
+
+  <div class="pl-bar-wrap"><div class="pl-bar" id="plBar"></div></div>
+  <div class="pl-status" id="plStatus">Initialisation...</div>
+</div>
+
+<div class="orb-container">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div id="progress-bar"></div>
+
+<!-- ════════ NAVBAR ════════ -->
+<nav id="navbar">
+  <a href="#hero" class="nav-brand">
+    <svg class="nav-star-svg" viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="13.5" stroke="rgba(80,144,184,0.25)" stroke-width="0.5"/>
+      <polygon points="14,3 16.5,10.5 24.5,10.5 18,15.5 20.5,23 14,18.5 7.5,23 10,15.5 3.5,10.5 11.5,10.5"
+               fill="none" stroke="rgba(80,144,184,0.7)" stroke-width="0.8"/>
+      <circle cx="14" cy="14" r="2.5" fill="rgba(80,144,184,0.5)"/>
+    </svg>
+    <div class="nav-text-block">
+      <span class="nav-name">Chernaya Zvezda</span>
+      <span class="nav-sub">ZSG // Dossier Interne // 2024</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#histoire">Histoire</a></li>
+    <li><a href="#lore">Lore</a></li>
+    <li><a href="#vision">Vision</a></li>
+    <li><a href="#zsg">Sécurité</a></li>
+    <li><a href="#activites">Activités</a></li>
+    <li><a href="#objectifs">Objectifs</a></li>
+    <li><a href="#ambitions">Ambitions</a></li>
+    <li><a href="#facettes">Facettes</a></li>
+    <li><a href="#membres">Membres</a></li>
+    <li><a href="#finale">Finale</a></li>
+  </ul>
+  <div class="nav-classif">⬛ Confidentiel</div>
+</nav>
+
+<!-- ════════ HERO ════════ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-corner tl"></div><div class="hero-corner tr"></div>
+  <div class="hero-corner bl"></div><div class="hero-corner br"></div>
+  <div class="hero-content">
+    <div class="hero-stamp">⬛ &nbsp; Classifié — Usage Interne Uniquement &nbsp; ⬛</div>
+    <div class="hero-emblem">
+      <svg viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg" width="100" height="100">
+        <circle cx="55" cy="55" r="53" stroke="rgba(80,144,184,0.14)" stroke-width="0.5"/>
+        <g class="hero-ring">
+          <circle cx="55" cy="55" r="48" stroke="rgba(80,144,184,0.2)" stroke-width="0.5" stroke-dasharray="4 8"/>
+        </g>
+        <circle cx="55" cy="55" r="40" stroke="rgba(80,144,184,0.09)" stroke-width="0.5"/>
+        <polygon points="55,12 62,34 85,34 67,47 74,70 55,57 36,70 43,47 25,34 48,34"
+                 fill="rgba(42,90,120,0.15)" stroke="rgba(80,144,184,0.6)" stroke-width="1"/>
+        <circle cx="55" cy="55" r="7" fill="rgba(80,144,184,0.3)" stroke="rgba(80,144,184,0.5)" stroke-width="0.5"/>
+        <circle cx="55" cy="55" r="3" fill="#5090b8"/>
+      </svg>
+    </div>
+    <p class="hero-pretitle">Organisation Fondée Jan. 2024 &nbsp;·&nbsp; Los Santos &nbsp;·&nbsp; Dossier N°001</p>
+    <h1 class="hero-h1">
+      <span class="glitch-wrap" data-text="CHERNAYA">CHERNAYA</span><br>
+      <span class="glitch-wrap" data-text="ZVEZDA">ZVEZDA</span>
+      <span class="ru-line">Чёрная Звезда — L'Étoile Noire</span>
+    </h1>
+    <div class="hero-vline"></div>
+    <p class="hero-tagline">
+      <em>« Ce qui brille dans la nuit ne cherche pas à être vu —<br>il cherche à rester invisible. »</em>
+    </p>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+    <span>Défiler</span>
+  </div>
+</section>
+
+<!-- ════════ HISTOIRE ════════ -->
+<div class="hdiv"></div>
+<section id="histoire" class="section-pad">
+  <div class="container">
+    <p class="sec-eyebrow reveal">Origine &amp; Chronologie</p>
+    <h2 class="sec-h2 reveal reveal-delay-1">L'Histoire de la <em>Zvezda</em></h2>
+    <div class="sec-rule reveal reveal-delay-2"></div>
+    <p class="sec-lead reveal reveal-delay-2">Six hommes. Six destins brisés par la même époque. Une rencontre qui n'aurait jamais dû avoir lieu. Et une organisation qui ne devrait pas exister.</p>
+
+    <div class="ch-tabs-row reveal reveal-delay-3">
+      <button class="ch-tab active" onclick="switchCh('ch1',this)">I. Les Racines</button>
+      <button class="ch-tab" onclick="switchCh('ch2',this)">II. La Dispersion</button>
+      <button class="ch-tab" onclick="switchCh('ch3',this)">III. Le Pacte</button>
+      <button class="ch-tab" onclick="switchCh('ch4',this)">IV. Los Santos</button>
+      <button class="ch-tab" onclick="switchCh('ch5',this)">V. La Naissance</button>
+      <button class="ch-tab" onclick="switchCh('ch6',this)">VI. L'Ascension</button>
+    </div>
+
+    <!-- CHAPITRE 1 -->
+    <div id="ch1" class="ch-panel active">
+      <div class="ch-layout">
+        <div class="ch-body">
+          <div class="ch-period">1991 — 2018</div>
+          <h3>Les Racines — Moscou, enfants du chaos</h3>
+          <p>Tout commence dans les décombres de l'Union soviétique. <strong>Sergei Mikhailovich Kozlov</strong> naît en 1982 à Moscou, fils d'un colonel du FSB et d'une avocate de droit commercial. Il grandit dans un appartement où les codes de procédure côtoient les manuels de contre-espionnage, où l'on apprend dès l'enfance que la loi n'est pas un idéal — c'est un terrain de jeu pour ceux qui en maîtrisent les règles.</p>
+          <p>À l'Académie de droit de l'État de Moscou, Kozlov obtient son diplôme avec mention en 2004. Ce n'est pas le droit lui-même qui l'intéresse — c'est <em>l'espace entre les lois</em>. Ces zones grises où les intentions se dissolvent dans la procédure, où ce qui est illégal devient légal si l'on sait comment le présenter. Il rejoint un cabinet de conseil international, se spécialise dans les restructurations d'actifs russes post-oligarchie, et comprend très vite que la vraie richesse ne se trouve pas dans les procès — elle se trouve dans les couloirs qui y mènent.</p>
+          <p>C'est en 2009, dans un séminaire d'arbitrage à Genève, qu'il rencontre pour la première fois <strong>Oleg Tarasov</strong> — alors conseiller financier pour un fond d'investissement lié à des intérêts azerbaïdjanais. Les deux hommes se reconnaissent immédiatement, avec la précision froide de deux prédateurs qui identifient un pair. Kozlov voit en Tarasov l'architecte financier qu'il lui manque. Tarasov voit en Kozlov le visage légal qui rend tout possible.</p>
+          <p>Entre 2010 et 2017, Kozlov monte silencieusement en puissance. Il construit un réseau de contacts dans les ministères russes, dans les chambres de commerce locales, dans les cabinets d'avocats européens qui blanchissent discrètement des capitaux post-soviétiques. <strong>Il est propre sur le papier. Irréprochable.</strong> Et c'est exactement pour ça qu'il est dangereux.</p>
+          <div class="ch-cite">
+            <p>« Mon père m'a appris que le pouvoir réel ne se porte pas — il s'exerce. Un homme qui montre sa force est un homme qui doute d'elle. »</p>
+            <cite>— Sergei Kozlov, notes personnelles, 2016</cite>
+          </div>
+          <p>En 2017, une enquête anti-corruption du parquet de Moscou s'approche dangereusement de plusieurs de ses clients. Kozlov n'est pas visé — il ne l'est jamais. Mais il comprend que la Russie a atteint ses limites pour lui. Le terrain est trop connu, trop surveillé, trop disputé. Il faut trouver un nouveau théâtre d'opérations. Un endroit où les règles sont à reconstruire. Où un homme de sa compétence peut poser les fondations, et non se battre sur des fondations déjà posées par d'autres.</p>
+          <p>En 2018, il quitte Moscou. Il emporte une valise, un ordinateur chiffré, et une liste de noms.</p>
+        </div>
+        <div class="ch-sidebar">
+          <div class="ch-stat-stack">
+            <div class="ch-stat"><div class="val">1982</div><div class="lbl">Naissance de Kozlov — Moscou</div></div>
+            <div class="ch-stat"><div class="val">2004</div><div class="lbl">Diplôme droit — Académie d'État</div></div>
+            <div class="ch-stat"><div class="val">2009</div><div class="lbl">Rencontre Tarasov — Genève</div></div>
+            <div class="ch-stat"><div class="val">2018</div><div class="lbl">Départ de Russie — Exil volontaire</div></div>
+          </div>
+          <div class="ch-info-block" style="margin-top:1px">
+            <div class="ib-label">Dossier de Couverture</div>
+            <div class="ib-val">Consultant juridique indépendant, spécialisé en droit des affaires international et restructuration d'actifs. Clients : fonds privés, family offices, cabinets d'arbitrage européens.</div>
+          </div>
+          <div class="ch-info-block">
+            <div class="ib-label">Formation Militaire</div>
+            <div class="ib-val">Service obligatoire accompli 2001-2002. Formation complémentaire en renseignement économique via le cabinet paternel. Aucune mention dans les fichiers officiels.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAPITRE 2 -->
+    <div id="ch2" class="ch-panel">
+      <div class="ch-layout">
+        <div class="ch-body">
+          <div class="ch-period">2015 — 2023</div>
+          <h3>La Dispersion — Six destins sur trois continents</h3>
+          <p>Pendant que Kozlov construit son réseau européen, les cinq autres futurs membres de la Zvezda vivent des trajectoires parallèles qui les brisent, les forment, et les rendront indispensables.</p>
+          <p><strong>Ivar Volkov</strong>, né en 1979 à Saint-Pétersbourg, est recruté par le GRU en 2003 après une carrière militaire prometteuse. Spécialiste en surveillance électronique et infiltration de réseaux, il travaille pendant dix ans dans des opérations qui n'ont officiellement jamais eu lieu. En 2015, son unité est sacrifiée dans un revers politique interne — ses collègues sont arrêtés, accusés d'avoir vendu des informations à des puissances étrangères. Volkov survit grâce à une couverture impeccable et à des réflexes que l'on n'acquiert que dans les situations de vie ou de mort. Il disparaît dans les circuits souterrains européens, travaille pour divers services de renseignement privé à Prague et Vienne, apprend à survivre dans les espaces entre les États.</p>
+          <p><strong>Oleg Tarasov</strong>, fils d'un économiste soviétique reconverti dans le conseil privé après 1991, a été formé dès l'enfance à penser en flux de capitaux. Après Genève, il développe ses propres structures offshore — Dubaï, Chypre, les Îles Caïmans. Il ne vole pas. Il <em>réalloue</em>. Entre 2015 et 2021, il gère plusieurs centaines de millions de dollars de capitaux gris pour des clients dont il tait les noms, et accumule une compréhension intime de la manière dont l'argent se déplace sans laisser de traces.</p>
+          <p><strong>Budimir Adov</strong>, serbe d'origine, a fait sa carrière dans les milieux politiques des Balkans — cette région du monde où la frontière entre politique, crime organisé et services étrangers n'a jamais vraiment existé. Conseiller informel pour plusieurs gouvernements successifs, il est passé maître dans l'art du lobbying discret, de la création de dettes morales, et de la manipulation des opinions publiques via des réseaux médiatiques qu'il contrôle indirectement. En 2021, une purge au sein du gouvernement qu'il soutient le prive de ses protections institutionnelles. Il cherche une nouvelle structure. Il cherche Kozlov.</p>
+          <p><strong>Youri Makarov</strong>, ex-officier de renseignement militaire russe reconverti dans le conseil en sécurité corporate à Hong Kong, a vécu la crise de 2019-2020 comme un révélateur. Il a vu des entreprises s'effondrer, des fortunes disparaître, des réseaux se défaire en quarante-huit heures. Il en a tiré une leçon simple : les structures trop visibles sont les premières à tomber. Il faut être le courant sous la vague, pas la vague.</p>
+          <p><strong>Kirill Karpov</strong>, né en 1990 à Moscou, est l'homme de terrain indispensable du groupe. Ancien boxeur professionnel reconverti en agent pour diverses organisations slaviennes après une blessure en compétition, il a développé une capacité rare à neutraliser les situations sans laisser de traces. Il a traversé l'Europe de l'Est en exécutant des missions pour des employeurs dont il taisait les noms — escorte, neutralisation de menaces, protection rapprochée pour des figures du crime organisé. En 2021, son réseau de contacts l'a amené à Makarov, qui l'a présenté à Kozlov. Son arrivée dans la Zvezda a comblé le dernier manque de l'équipe : quelqu'un qui n'hésite pas.</p>
+          <div class="ch-cite">
+            <p>« Nous n'avions rien en commun, au départ. Des origines différentes, des méthodes différentes, des cicatrices différentes. Ce qui nous a rassemblés, c'est que nous avions tous, à un moment, été trahis par les structures auxquelles nous avions obéi. »</p>
+            <cite>— Kirill Karpov, debriefing interne, 2024</cite>
+          </div>
+        </div>
+        <div class="ch-sidebar">
+          <div class="ch-timeline">
+            <div class="ch-tl-item"><div class="ch-tl-yr">2015</div><div class="ch-tl-txt">Volkov disparaît des fichiers officiels. Prague, Vienne.</div></div>
+            <div class="ch-tl-item"><div class="ch-tl-yr">2016</div><div class="ch-tl-txt">Tarasov développe ses structures financières offshore depuis Dubaï.</div></div>
+            <div class="ch-tl-item"><div class="ch-tl-yr">2018</div><div class="ch-tl-txt">Kozlov quitte Moscou. Début de la phase de recrutement passif.</div></div>
+            <div class="ch-tl-item"><div class="ch-tl-yr">2019</div><div class="ch-tl-txt">Makarov perfectionne ses méthodes opérationnelles. Discipline de fer.</div></div>
+            <div class="ch-tl-item"><div class="ch-tl-yr">2020</div><div class="ch-tl-txt">Karpov quitte le monde des RP pour se mettre en retrait.</div></div>
+            <div class="ch-tl-item"><div class="ch-tl-yr">2021</div><div class="ch-tl-txt">Adov perd ses protections. Cherche une nouvelle structure.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAPITRE 3 -->
+    <div id="ch3" class="ch-panel">
+      <div class="ch-layout">
+        <div class="ch-body">
+          <div class="ch-period">Novembre 2021</div>
+          <h3>Le Pacte d'Istanbul — Chambre 412</h3>
+          <p>C'est Tarasov qui organise la réunion. Il connaît Kozlov depuis Genève. Il connaît Volkov via des circuits de renseignement parallèles. Il a été mis en contact avec Adov par un intermédiaire des Balkans. Makarov et Karpov ont été identifiés, évalués, approchés discrètement au cours des dix-huit mois précédents.</p>
+          <p>L'hôtel Çırağan Palace, Istanbul, <strong>17 novembre 2021</strong>. Les six se retrouvent pour la première fois dans la chambre 412. Ils n'arrivent pas ensemble — chacun est venu en utilisant une identité différente, depuis des villes différentes, avec des billets d'avion achetés séparément. Ils ne se connaissent pas tous personnellement. Certains se voient pour la première fois.</p>
+          <p>La réunion dure seize heures. Elle n'a aucun procès-verbal. Elle n'est enregistrée sur aucun support. Kozlov pose sa vision sur la table : <em>une organisation qui opère dans l'espace légal, qui dispose d'outils illégaux en couverture, et qui construit sur le long terme une influence réelle dans une ville à choisir</em>. Pas un cartel. Pas un gang. Une structure institutionnelle au service d'une ambition collective.</p>
+          <p>Les discussions sont longues, précises, et parfois violentes dans leur franchises. Volkov soulève les risques opérationnels. Tarasov questionne la rentabilité court-terme. Adov insiste sur la nécessité d'une couverture politique. Makarov veut des protocoles de sécurité stricts dès le départ. Karpov pose la question que personne n'ose formuler : <em>« Et si l'un d'entre nous décide de partir ? »</em></p>
+          <p>La réponse de Kozlov est nette. <strong>On entre. On ne sort pas.</strong> Pas par la menace — par la logique. Si cette organisation fonctionne comme prévu, personne n'aura envie de sortir. Et si elle échoue, il n'y aura plus grand-chose à quitter.</p>
+          <p>Trois décisions fondatrices sont prises au cours de cette réunion. Premièrement : l'organisation sera basée aux États-Unis, dans une ville suffisamment grande et suffisamment instable pour offrir des opportunités. Deuxièmement : la couverture sera une entreprise de sécurité privée — propre, crédible, justifiant la présence armée et les connexions institutionnelles. Troisièmement : le nom. <strong>Chernaya Zvezda</strong>. L'Étoile Noire. Un corps céleste dont on ne peut mesurer la présence que par son influence sur ce qui l'entoure.</p>
+          <div class="ch-cite">
+            <p>« On ne nous a pas donné ce nom. On l'a choisi pour ce qu'il signifie : nous sommes là où on ne nous voit pas. On mesure notre existence à l'effet que nous produisons, jamais à ce que nous montrons. »</p>
+            <cite>— Sergei Kozlov, discours de fondation, Chambre 412</cite>
+          </div>
+        </div>
+        <div class="ch-sidebar">
+          <div class="ch-stat-stack">
+            <div class="ch-stat"><div class="val">16h</div><div class="lbl">Durée de la réunion fondatrice</div></div>
+            <div class="ch-stat"><div class="val">6</div><div class="lbl">Participants — Aucun procès-verbal</div></div>
+            <div class="ch-stat"><div class="val">0</div><div class="lbl">Trace officielle de la réunion</div></div>
+          </div>
+          <div class="ch-info-block" style="margin-top:1px">
+            <div class="ib-label">Les 3 Décisions Fondatrices</div>
+            <div class="ib-val">1. Implantation aux États-Unis — ville à identifier.<br>2. Couverture : entreprise de sécurité privée haut de gamme.<br>3. Nom : Chernaya Zvezda. Devise : Тень защищает звезду.</div>
+          </div>
+          <div class="ch-info-block">
+            <div class="ib-label">Protocole de Sécurité</div>
+            <div class="ib-val">Six identités distinctes. Six itinéraires séparés. Aucune communication numérique avant la réunion. La chambre est louée sous un nom fictif crédible.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAPITRE 4 -->
+    <div id="ch4" class="ch-panel">
+      <div class="ch-layout">
+        <div class="ch-body">
+          <div class="ch-period">2022 — 2023</div>
+          <h3>L'Infiltration de Los Santos — Observer avant d'agir</h3>
+          <p>Los Santos n'a pas été choisie par hasard. Kozlov a étudié plusieurs villes américaines pendant trois mois : Las Vegas pour ses flux financiers opaques, Miami pour ses connexions sud-américaines, Los Angeles pour son mélange d'industrie et de politique. Los Santos — cette ville hybride, chaotique, saturée d'opportunités et de corruption à tous les niveaux — est apparue comme le terrain idéal. <em>Assez grande pour qu'on y soit invisibles. Assez instable pour qu'il y ait des failles partout.</em></p>
+          <p>Les six arrivent séparément entre janvier et juin 2022. Ils ne se fréquentent pas en public. Chacun a une mission de reconnaissance spécifique. <strong>Volkov</strong> cartographie les forces de l'ordre — leurs habitudes, leurs rotations, leurs zones d'ombre. <strong>Tarasov</strong> identifie les structures financières locales, les failles des banques et des sociétés de transit. <strong>Adov</strong> approche discrètement les réseaux politiques, assiste à des réceptions publiques, construit une première couche de relations sociales. <strong>Makarov</strong> analyse les dynamiques criminelles locales — qui contrôle quoi, quelles alliances sont fragiles, quels espaces sont libres. <strong>Karpov</strong> s'installe dans les milieux nocturnes, fréquente les établissements ciblés, s'impose progressivement comme une présence rassurante dans les clubs que la Zvezda entend sécuriser. Et <strong>Kozlov</strong> observe tout cela depuis son appartement en face du port — coordonnant, synthétisant, affinant.</p>
+          <p>Les dix-huit mois de reconnaissance produisent un document interne de 340 pages — jamais imprimé, existant uniquement dans un serveur chiffré auquel seul Kozlov a accès. Il contient une cartographie complète des opportunités de Los Santos : les zones non couvertes par les forces de l'ordre, les élus vulnérables à une approche discrète, les milieux d'affaires cherchant une protection fiable, les réseaux criminels mal organisés dont on peut extraire de la valeur sans les affronter.</p>
+          <p>Au terme de cette phase, Kozlov convoque une deuxième réunion — plus courte, plus précise. Le diagnostic est posé. Les fondations sont identifiées. Il reste à construire.</p>
+          <div class="ch-cite">
+            <p>« Ne jamais agir avant de comprendre. Un chirurgien qui opère sans avoir lu le dossier tue son patient. Nous avions passé dix-huit mois à lire le dossier de cette ville. Nous savions exactement où couper. »</p>
+            <cite>— Youri Makarov, debriefing interne, décembre 2023</cite>
+          </div>
+        </div>
+        <div class="ch-sidebar">
+          <div class="ch-timeline">
+            <div class="ch-tl-item"><div class="ch-tl-yr">Jan 22</div><div class="ch-tl-txt">Arrivée de Kozlov et Tarasov à Los Santos.</div></div>
+            <div class="ch-tl-item"><div class="ch-tl-yr">Mar 22</div><div class="ch-tl-txt">Volkov s'installe. Début de la cartographie des forces de l'ordre.</div></div>
+            <div class="ch-tl-item"><div class="ch-tl-yr">Juin 22</div><div class="ch-tl-txt">Adov et Karpov arrivent. Couverture résidentielle établie.</div></div>
+            <div class="ch-tl-item"><div class="ch-tl-yr">Sept 22</div><div class="ch-tl-txt">Makarov complète le groupe. Analyse criminologique démarrée.</div></div>
+            <div class="ch-tl-item"><div class="ch-tl-yr">2023</div><div class="ch-tl-txt">Rédaction du document d'analyse — 340 pages. Chiffré.</div></div>
+            <div class="ch-tl-item"><div class="ch-tl-yr">Déc 23</div><div class="ch-tl-txt">Deuxième réunion fondatrice. Plan opérationnel validé.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAPITRE 5 -->
+    <div id="ch5" class="ch-panel">
+      <div class="ch-layout">
+        <div class="ch-body">
+          <div class="ch-period">12 Janvier 2024</div>
+          <h3>La Naissance Officielle — Le Zvezda Security Group prend forme</h3>
+          <p>Le <strong>12 janvier 2024</strong>, le <em>Zvezda Security Group LLC</em> est officiellement enregistré dans l'État de San Andreas. Capital initial : 380 000 dollars, apportés via trois sources distinctes dont les traces remontent à des sociétés-écrans parfaitement propres. Adresse : un bureau cossu dans le quartier des affaires de Los Santos. PDG officiel : Sergei Kozlov, présenté comme un consultant en sécurité d'origine internationale.</p>
+          <p>Les premiers contrats arrivent dans les semaines suivantes. ZSG ne fait pas de démarchage commercial — ce serait trop visible. À la place, Adov active ses premiers contacts politiques. Karpov présente ZSG à des gérants de clubs auxquels elle a eu le temps de se lier. Makarov approche discrètement des promoteurs immobiliers en leur proposant des audits de sécurité gratuits pour les premiers mois. La réputation se construit avant que les clients n'arrivent.</p>
+          <p>En mars 2024, ZSG signe son premier contrat institutionnel — la sécurisation d'une réception diplomatique. La prestation est irréprochable, professionnelle, discrète. Elle est délibérément sous-facturée. Le but n'est pas le profit — c'est la référence. En juin, le carnet de clients de ZSG compte déjà neuf établissements, deux personnalités politiques locales, et un contrat récurrent avec un groupe hôtelier.</p>
+          <p>Mais derrière cette façade, la véritable structure de la Zvezda se met en place. <strong>Volkov</strong> installe un système de surveillance discret dans plusieurs établissements partenaires — légalement justifié dans le cadre des contrats ZSG, mais servant en réalité à alimenter une base de données de renseignement. <strong>Tarasov</strong> commence à mettre en place les premières structures de blanchiment — un restaurant, une galerie d'art, une société de location de véhicules. <strong>Karpov</strong> gère les premières présences terrain — contacts dans les milieux nocturnes, protection rapprochée pour les premiers clients, présence musclée discrète aux réceptions de ZSG.</p>
+          <p>La Chernaya Zvezda est née. Elle respire. Elle observe. Elle attend.</p>
+        </div>
+        <div class="ch-sidebar">
+          <div class="ch-stat-stack">
+            <div class="ch-stat"><div class="val">380k</div><div class="lbl">Capital initial — Sources propres</div></div>
+            <div class="ch-stat"><div class="val">Jan 24</div><div class="lbl">Enregistrement officiel ZSG</div></div>
+            <div class="ch-stat"><div class="val">9+</div><div class="lbl">Clients ZSG à juin 2024</div></div>
+          </div>
+          <div class="ch-info-block" style="margin-top:1px">
+            <div class="ib-label">Structure Juridique</div>
+            <div class="ib-val">Zvezda Security Group LLC — San Andreas. PDG : Kozlov. Directeur Opérationnel : Makarov. DG Finance : Tarasov. Relations Institutionnelles : Adov. Toutes les autres fonctions sont occupées par des employés de bonne foi qui ne savent pas à qui ils travaillent réellement.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAPITRE 6 -->
+    <div id="ch6" class="ch-panel">
+      <div class="ch-layout">
+        <div class="ch-body">
+          <div class="ch-period">2024 — En cours</div>
+          <h3>L'Ascension — Devenir indispensable</h3>
+          <p>En moins d'un an d'existence officielle, la Chernaya Zvezda a réalisé ce que des organisations plus anciennes mettent une décennie à construire : une présence institutionnelle crédible, un réseau de contacts diversifié, et une infrastructure financière qui permet à la fois de générer des revenus légaux et de faire circuler des fonds moins traçables.</p>
+          <p><strong>ZSG compte aujourd'hui plus de quinze contrats actifs</strong> dans les secteurs de la sécurité événementielle, de la protection rapprochée, et du conseil en risques. Chaque contrat est une porte ouverte sur un segment de la ville. Chaque agent ZSG est une source d'information passive. La ville se déverse dans les oreilles de la Zvezda sans jamais s'en douter.</p>
+          <p>La base de données de renseignement construite par Volkov est aujourd'hui l'un des actifs les plus précieux de l'organisation. Elle contient des informations sur des centaines de personnes influentes — non pas des secrets compromettants à court terme, mais quelque chose de plus subtil : <em>des habitudes, des relations, des dettes, des peurs</em>. Une connaissance profonde du fonctionnement humain de la ville.</p>
+          <p>Sur le plan financier, Tarasov a mis en place une architecture de blanchiment qui fait circuler des sommes progressivement croissantes à travers quatre structures légales différentes. Le flux est propre, lent, et pratiquement indétectable. <strong>La Zvezda n'est pas riche encore — mais elle est en train de construire les canaux qui lui permettront de le devenir.</strong></p>
+          <p>L'ambition à court terme est simple : devenir un acteur institutionnel incontournable de Los Santos. Un partenaire pour les élus, un protecteur pour les établissements, un nœud invisible dans le réseau économique de la ville. Quand tout le monde a besoin de vous, vous n'avez plus jamais besoin de menacer. Et c'est exactement là où la Zvezda se dirige.</p>
+          <div class="ch-cite">
+            <p>« Dans six mois, nous serons au cœur de cette ville sans que personne ne sache notre nom. Dans deux ans, ceux qui le sauront seront ceux qui ont besoin de nous pour fonctionner. »</p>
+            <cite>— Sergei Kozlov, réunion de bilan, septembre 2024</cite>
+          </div>
+        </div>
+        <div class="ch-sidebar">
+          <div class="ch-stat-stack">
+            <div class="ch-stat"><div class="val">15+</div><div class="lbl">Contrats ZSG actifs</div></div>
+            <div class="ch-stat"><div class="val">4</div><div class="lbl">Structures de blanchiment actives</div></div>
+            <div class="ch-stat"><div class="val">5</div><div class="lbl">Contacts institutionnels confirmés</div></div>
+            <div class="ch-stat"><div class="val">340p</div><div class="lbl">Dossier renseignement Los Santos</div></div>
+          </div>
+          <div class="ch-info-block" style="margin-top:1px">
+            <div class="ib-label">Prochaine Étape</div>
+            <div class="ib-val">Consolidation de la présence institutionnelle. Premier levier politique activé. Extension du réseau de surveillance. Recrutement de deux associés supplémentaires dans des secteurs identifiés.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+<!-- ════════ LORE ════════ -->
+<div class="hdiv"></div>
+<section id="lore" class="section-pad alt">
+  <div class="container">
+    <p class="sec-eyebrow reveal">Mythologie &amp; Codes</p>
+    <h2 class="sec-h2 reveal reveal-delay-1">Le <em>Lore</em> de la Zvezda</h2>
+    <div class="sec-rule reveal reveal-delay-2"></div>
+    <p class="sec-lead reveal reveal-delay-2">Une organisation ne tient pas que par sa structure — elle tient par ce qu'elle croit. La Zvezda a construit, depuis sa fondation, une mythologie interne cohérente : un emblème chargé de sens, une langue codée, des lois non écrites, et une hiérarchie pensée pour durer.</p>
+
+    <div class="lore-grid reveal reveal-delay-3">
+
+      <!-- L'Emblème -->
+      <div class="lore-card">
+        <div class="lc-num">// LORE.01</div>
+        <span class="lc-icon">⬛</span>
+        <div class="lc-title">L'Emblème — L'Étoile Noire</div>
+        <div class="lc-body">
+          <p>En astronomie, une étoile noire est un corps céleste dont la densité est telle que sa propre lumière ne peut s'en échapper — mais dont l'influence gravitationnelle sur les corps qui l'entourent est mesurable, réelle, inévitable. <strong>On ne la voit pas. On la ressent.</strong></p>
+          <p>C'est Kozlov qui a choisi ce nom lors du Pacte d'Istanbul. Non par romantisme, mais par précision conceptuelle. La Zvezda ne cherche pas à briller — elle cherche à exercer une attraction. Les élus, les gérants, les forces de l'ordre, les autres organisations : tous sont amenés à graviter autour de la Zvezda sans comprendre exactement pourquoi ils le font.</p>
+          <p>L'étoile à dix branches de l'emblème est délibérément incomplète — toujours dessinée avec un léger espace, comme si elle n'avait pas fini de se former. <strong>C'est une organisation en construction permanente.</strong> Un objet en mouvement, jamais figé. La perfection serait le signe que l'on a arrêté de croître.</p>
+          <p>La couleur noire n'est pas l'absence de couleur — c'est la somme de toutes les couleurs absorbées. Métaphore que Karpov développe souvent : <em>« Nous absorbons tout. Nous ne reflèterons rien. »</em></p>
+        </div>
+      </div>
+
+      <!-- Zvezdny Yazyk -->
+      <div class="lore-card">
+        <div class="lc-num">// LORE.02</div>
+        <span class="lc-icon">◈</span>
+        <div class="lc-title">Zvezdny Yazyk — La Langue de l'Étoile</div>
+        <div class="lc-body">
+          <p>Inventé par Volkov en s'inspirant des protocoles de communication du GRU, le <strong>Zvezdny Yazyk</strong> (Звёздный Язык — La Langue de l'Étoile) est un système de codes de communication interne qui permet aux membres de se parler en public sans être compris.</p>
+          <p>Il ne s'agit pas d'une langue secrète à proprement parler, mais d'un ensemble de conventions : des formulations anodines dont le sens réel est établi en amont, des références culturelles détournées, des gestes codifiés. <em>« Je cherche un bon restaurant de poisson »</em> signifie que l'on demande à rencontrer Volkov. <em>« Il fait froid cette semaine »</em> signale une menace opérationnelle imminente.</p>
+          <p>Le dictionnaire du Zvezdny Yazyk est révisé <strong>tous les trois mois</strong> par Volkov et Kozlov. Les anciennes versions sont effacées. Les membres apprennent la nouvelle version lors d'une réunion mensuelle dont le prétexte officiel est toujours différent.</p>
+          <p>Ce système a une seconde fonction, moins technique : il crée une communauté. Parler une même langue secrète soude un groupe de manière plus durable que n'importe quel serment. C'est du liant identitaire.</p>
+        </div>
+      </div>
+
+      <!-- Les 7 Lois -->
+      <div class="lore-card">
+        <div class="lc-num">// LORE.03</div>
+        <span class="lc-icon">◉</span>
+        <div class="lc-title">Les Sept Lois Non Écrites</div>
+        <div class="lc-body">
+          <p>La Zvezda n'a pas de charte. Pas de règlement intérieur. Pas de document signé. Les règles sont transmises oralement, de Kozlov vers les membres, lors d'entretiens individuels qui ont lieu en dehors de tout contexte de réunion. Cette oralité n'est pas un oubli — c'est un choix stratégique. Ce qui n'est pas écrit ne peut pas être saisi.</p>
+          <ul class="lore-loi-list">
+            <li><span class="loi-num">LOI I</span>La Zvezda passe avant les intérêts personnels. Toujours. Sans exception.</li>
+            <li><span class="loi-num">LOI II</span>Aucun membre ne parle des activités classifiées à l'extérieur. Ni à sa famille, ni à un partenaire, ni sous pression.</li>
+            <li><span class="loi-num">LOI III</span>Aucune initiative opérationnelle sensible sans validation hiérarchique. L'improvisation est une forme de trahison.</li>
+            <li><span class="loi-num">LOI IV</span>La façade légale est sacrée. Aucun comportement susceptible de ternir ZSG n'est toléré publiquement.</li>
+            <li><span class="loi-num">LOI V</span>Un membre en difficulté est aidé par l'organisation — juridiquement, financièrement, opérationnellement. Mais cette aide crée une dette.</li>
+            <li><span class="loi-num">LOI VI</span>On n'entre pas. On n'est pas recrutés. On est choisis, et ce choix est définitif.</li>
+            <li class="secret"><span class="loi-num">LOI VII</span>[ ACCÈS RESTREINT — PAKHAN UNIQUEMENT ]</li>
+          </ul>
+          <p style="margin-top:1rem;font-size:0.85rem;">La septième loi est connue de Kozlov seul. Certains pensent qu'elle concerne ce qui arrive à quelqu'un qui trahit. D'autres pensent qu'elle concerne ce qui arrive à Kozlov lui-même. <em>Personne ne pose la question à voix haute.</em></p>
+        </div>
+      </div>
+
+      <!-- Hiérarchie -->
+      <div class="lore-card">
+        <div class="lc-num">// LORE.04</div>
+        <span class="lc-icon">◆</span>
+        <div class="lc-title">La Hiérarchie — Structure et Niveaux</div>
+        <div class="lc-body">
+          <p>La Zvezda fonctionne avec une hiérarchie inspirée de l'organisation des syndicats du crime post-soviétique, adaptée aux réalités d'une organisation moderne opérant dans un cadre légal. Elle n'est jamais évoquée en public. En interne, les titres ne sont jamais prononcés — seulement compris.</p>
+          <div class="lore-hier">
+            <div class="lore-hier-row">
+              <div style="flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--gold1);margin-right:0.2rem"></div>
+              <div class="lhr-rank">TIER I</div>
+              <div><div class="lhr-name">Pakhan</div><div class="lhr-desc">Direction absolue. Décisions stratégiques. Accès total. Kozlov.</div></div>
+              <div class="lhr-ru">Пахан</div>
+            </div>
+            <div class="lore-hier-row">
+              <div style="flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--ice3);margin-right:0.2rem"></div>
+              <div class="lhr-rank">TIER II</div>
+              <div><div class="lhr-name">Vnutrenniy Krug</div><div class="lhr-desc">Cercle Interne — les cinq cofondateurs. Accès aux opérations classifiées.</div></div>
+              <div class="lhr-ru">Внутренний Круг</div>
+            </div>
+            <div class="lore-hier-row">
+              <div style="flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--ice5);margin-right:0.2rem"></div>
+              <div class="lhr-rank">TIER III</div>
+              <div><div class="lhr-name">Brat / Sestra</div><div class="lhr-desc">Frères et Sœurs — membres recrutés de confiance. Accès partiel. Pas encore.</div></div>
+              <div class="lhr-ru">Брат / Сестра</div>
+            </div>
+            <div class="lore-hier-row">
+              <div style="flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--text3);margin-right:0.2rem"></div>
+              <div class="lhr-rank">TIER IV</div>
+              <div><div class="lhr-name">Svyaz</div><div class="lhr-desc">Contacts — externes, liés par des dettes ou des intérêts. Ignorent la structure.</div></div>
+              <div class="lhr-ru">Связь</div>
+            </div>
+          </div>
+          <p style="margin-top:1.2rem;font-size:0.9rem;">La hiérarchie n'est pas une ligne de commandement classique. <strong>C'est un cercle de confiance.</strong> Plus on est proche du centre, plus on a accès — et plus on est lié. Les membres du Vnutrenniy Krug ne reçoivent pas d'ordres : ils reçoivent de l'information, et cette information les rend capables de prendre les bonnes décisions.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════ VISION ════════ -->
+<div class="hdiv"></div>
+<section id="vision" class="section-pad">
+  <div class="container">
+    <p class="sec-eyebrow reveal">Philosophie &amp; Identité</p>
+    <h2 class="sec-h2 reveal reveal-delay-1">Notre <em>Vision</em></h2>
+    <div class="sec-rule reveal reveal-delay-2"></div>
+    <p class="sec-lead reveal reveal-delay-2">La Zvezda n'est pas une organisation criminelle qui se cache derrière une façade légale. C'est une organisation légale qui dispose d'outils parallèles. La nuance est fondamentale — et c'est ce qui nous rend différents de tous les autres acteurs de cette ville.</p>
+
+    <div class="vision-grid reveal reveal-delay-3">
+
+      <div class="vision-card">
+        <div class="vc-num">// VISION.01</div>
+        <span class="vc-icon">◈</span>
+        <div class="vc-title">L'Empire du Renseignement</div>
+        <div class="vc-body">Notre avantage n'est pas notre force de frappe — c'est <strong>ce que nous savons</strong>. ZSG nous place dans les coulisses de la ville : boîtes de nuit, mairie, consulats, aéroports. Chaque contrat signé est une oreille installée. L'information circule vers nous, et jamais dans l'autre sens.</div>
+        <span class="vc-tag">Intelligence First</span>
+      </div>
+
+      <div class="vision-card">
+        <div class="vc-num">// VISION.02</div>
+        <span class="vc-icon">◆</span>
+        <div class="vc-title">La Légitimité comme Armure</div>
+        <div class="vc-body"><strong>80% de nos activités sont légales</strong>, traçables, et défendables devant n'importe quelle institution. Ce n'est pas une contrainte — c'est notre force. Une organisation qui opère en plein jour est infiniment plus difficile à démanteler qu'une qui se cache. On se protège en étant au-dessus de tout soupçon.</div>
+        <span class="vc-tag">Couverture Totale</span>
+      </div>
+
+      <div class="vision-card">
+        <div class="vc-num">// VISION.03</div>
+        <span class="vc-icon">◉</span>
+        <div class="vc-title">Le Réseau avant le Capital</div>
+        <div class="vc-body">L'argent se gagne et se perd. Un réseau de relations — fonctionnaires, élus, gérants de clubs, journalistes, chefs de sécurité — ça se construit sur des années et ça ne disparaît pas. La Zvezda investit autant dans ses contacts que dans ses opérations. <strong>Un carnet d'adresses solide vaut plus que n'importe quel trafic.</strong></div>
+        <span class="vc-tag">Relations &amp; Influence</span>
+      </div>
+
+      <div class="vision-card">
+        <div class="vc-num">// VISION.04</div>
+        <span class="vc-icon">◐</span>
+        <div class="vc-title">Partout et Nulle Part</div>
+        <div class="vc-body">Nous ne cherchons pas la notoriété dans le milieu. Nous ne cherchons pas la confrontation. Nous n'affichons pas notre pouvoir. <strong>L'Étoile Noire brille parce qu'elle sait rester invisible.</strong> Chaque membre est, en public, un professionnel irréprochable. Nous jouons le long terme — toujours.</div>
+        <span class="vc-tag">Profil Bas Absolu</span>
+      </div>
+
+      <div class="vision-card">
+        <div class="vc-num">// VISION.05</div>
+        <span class="vc-icon">⬡</span>
+        <div class="vc-title">Une Organisation qui Dure</div>
+        <div class="vc-body">Nous ne sommes pas ici pour faire un coup et disparaître. La Zvezda se pense comme une <strong>institution</strong> — avec une structure, une hiérarchie, des règles et une vision à long terme. Chaque décision est évaluée en fonction de ce qu'elle change dans dix ans, pas dans dix jours.</div>
+        <span class="vc-tag">Vision Institutionnelle</span>
+      </div>
+
+      <div class="vision-card">
+        <div class="vc-num">// VISION.06</div>
+        <span class="vc-icon">⬛</span>
+        <div class="vc-title">La Loyauté comme Loi Suprême</div>
+        <div class="vc-body">Entre nous, les règles sont claires et non-négociables. Aucun membre ne prend d'initiative sans en référer à la hiérarchie. En contrepartie, la Zvezda protège les siens — juridiquement, financièrement, opérationnellement. <strong>On entre. On ne sort pas.</strong></div>
+        <span class="vc-tag">Brotherhood</span>
+      </div>
+
+    </div>
+
+    <div class="vision-manifesto reveal reveal-delay-4">
+      <div>
+        <div class="vm-label">// Manifeste Interne</div>
+        <div class="vm-title">Ce que nous sommes. Ce que nous construisons.</div>
+      </div>
+      <div class="vm-body">
+        <p>La Chernaya Zvezda est née d'un constat simple : <strong>dans chaque ville, le pouvoir réel n'appartient ni aux élus ni aux criminels</strong> — il appartient à ceux qui savent naviguer entre les deux, qui sont indispensables aux uns et protégés par les autres.</p>
+        <p>Nous voulons être <em>cette organisation</em>. Celle dont tout le monde a besoin sans jamais vraiment savoir pourquoi. Celle qui signe les contrats de sécurité le lundi, dîne avec des élus le mercredi, et fait circuler des informations que personne d'autre ne possède le vendredi. Visible partout. Identifiable nulle part.</p>
+        <p>Notre modèle n'est pas la brutalité — c'est <strong>l'indispensabilité</strong>. Quand tout le monde a besoin de vous pour fonctionner, vous n'avez plus jamais besoin de menacer qui que ce soit.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════ ZSG — SERVICE SÉCURITÉ ════════ -->
+<div class="hdiv"></div>
+<section id="zsg" class="section-pad alt">
+  <div class="container">
+    <p class="sec-eyebrow reveal">Couverture Légale — Vitrine Officielle</p>
+    <h2 class="sec-h2 reveal reveal-delay-1"><em>Zvezda</em> Security Group</h2>
+    <div class="sec-rule reveal reveal-delay-2"></div>
+    <p class="sec-lead reveal reveal-delay-2">ZSG n'est pas qu'une façade. C'est une entreprise de sécurité privée réelle, professionnelle, et reconnue — qui génère de vrais revenus, emploie de vrais agents, et décroche de vrais contrats. C'est cette crédibilité qui rend tout le reste possible.</p>
+
+    <div class="zsg-hero reveal reveal-delay-3">
+      <div>
+        <div class="zsg-badge-row">
+          <span class="zsg-badge zsgb-active">● Opérationnel</span>
+          <span class="zsg-badge zsgb-legal">✓ Société Enregistrée</span>
+          <span class="zsg-badge zsgb-gov">★ Contrats Gouvernementaux</span>
+        </div>
+        <h3>Zvezda Security Group LLC</h3>
+        <div class="zsg-sub">Protection · Conseil · Renseignement Privé · Gestion de Crise</div>
+        <p>Fondée en janvier 2024 à Los Santos, ZSG est positionnée comme une société de sécurité privée <strong>haut de gamme</strong> — un segment où les marges sont élevées, les clients discrets, et les questions rares. Notre positionnement premium nous permet de justifier des flux financiers importants et d'accéder à des environnements normalement fermés.</p>
+        <p>ZSG ne démarche pas ses clients. Elle se fait recommander. Chaque prestation irréprochable génère une référence. Chaque référence ouvre une porte. Et derrière chaque porte se trouvent des informations, des relations, et des opportunités que nos concurrents ne verront jamais.</p>
+        <p>Notre avantage concurrentiel absolu : <strong>nous ne sommes pas là pour sécuriser — nous sommes là pour comprendre</strong>. Chaque mission ZSG est une opération de renseignement déguisée en prestation de service.</p>
+      </div>
+      <div class="zsg-kpi-col">
+        <div class="zsg-kpi"><div class="kv">15+</div><div class="kl">Contrats actifs — 2024</div></div>
+        <div class="zsg-kpi"><div class="kv">380k</div><div class="kl">Capital initial — Sources propres</div></div>
+        <div class="zsg-kpi"><div class="kv">100%</div><div class="kl">Façade légale irréprochable</div></div>
+        <div class="zsg-kpi"><div class="kv">80%</div><div class="kl">Part légale du business Zvezda</div></div>
+      </div>
+    </div>
+
+    <!-- Services grid -->
+    <div class="zsg-services reveal reveal-delay-4">
+
+      <div class="zsg-svc">
+        <span class="zsvc-icon">◈</span>
+        <div class="zsvc-title">Protection Rapprochée</div>
+        <div class="zsvc-body">Escorte et sécurisation de personnalités — hommes d'affaires, élus locaux, diplomates. Nos agents sont formés, discrets, et présentables. Chaque mission nous place au cœur des conversations et des décisions qui comptent.</div>
+        <span class="zsvc-tag">Accès VIP</span>
+      </div>
+
+      <div class="zsg-svc">
+        <span class="zsvc-icon">◉</span>
+        <div class="zsvc-title">Sécurité Événementielle</div>
+        <div class="zsvc-body">Gestion complète de la sécurité lors de soirées privées, galas, conférences et événements gouvernementaux. Notre présence dans les clubs nous donne un contrôle total sur les accès — et une vue dégagée sur tout ce qui se passe à l'intérieur.</div>
+        <span class="zsvc-tag">Clubs &amp; Nuits</span>
+      </div>
+
+      <div class="zsg-svc">
+        <span class="zsvc-icon">◆</span>
+        <div class="zsvc-title">Conseil en Sûreté d'Entreprise</div>
+        <div class="zsvc-body">Audit des vulnérabilités, analyse des risques, recommandations structurelles. Ces missions nous donnent un accès contractuel aux systèmes internes de nos clients — leurs locaux, leurs données, leurs habitudes. Une mine d'informations exploitables.</div>
+        <span class="zsvc-tag">Intelligence Corporate</span>
+      </div>
+
+      <div class="zsg-svc">
+        <span class="zsvc-icon">◐</span>
+        <div class="zsvc-title">Partenariats Gouvernementaux</div>
+        <div class="zsvc-tag">Accès Institutionnel</div>
+        <div class="zsvc-body" style="margin-top:0.8rem">Contrats officiels avec la municipalité et les institutions publiques pour la sécurisation d'espaces et d'événements. En retour : une légitimité absolue et un accès indirect aux plannings et communications des forces de l'ordre locales.</div>
+      </div>
+
+      <div class="zsg-svc">
+        <span class="zsvc-icon">⬡</span>
+        <div class="zsvc-title">Transport Sécurisé &amp; Logistique</div>
+        <div class="zsvc-body">Convois sécurisés pour transport de valeurs, de personnes, ou de matériels sensibles. Notre présence légale dans les zones logistiques stratégiques — dont l'aéroport de Sandy Shores — nous donne un accès régulier et justifiable à des points névralgiques de la région.</div>
+        <span class="zsvc-tag">Sandy Shores // Logistique</span>
+      </div>
+
+      <div class="zsg-svc">
+        <span class="zsvc-icon">⬛</span>
+        <div class="zsvc-title">Gestion de Crise &amp; Extraction</div>
+        <div class="zsvc-body">Intervention discrète en cas de situation sensible. Extraction de personnalités, résolution de crises privées, accompagnement juridique d'urgence. Des contrats rares, très bien rémunérés — et qui créent des dettes morales durables envers ceux qu'on a tirés d'affaire.</div>
+        <span class="zsvc-tag">Dettes &amp; Loyauté</span>
+      </div>
+
+    </div>
+
+    <div class="zsg-avantage reveal reveal-delay-5">
+      <div>
+        <div class="zav-title">Pourquoi ZSG est Imbattable</div>
+        <div class="zav-body">
+          <p>Les concurrents vendent de la sécurité. <strong>Nous vendons de la tranquillité d'esprit.</strong> Et la tranquillité d'esprit ne se négocie pas au prix le plus bas — elle se vend à celui qui inspire le plus confiance.</p>
+          <p>Notre positionnement repose sur trois piliers : une réputation irréprochable construite prestation après prestation, un réseau de clients qui se recommandent mutuellement, et une discrétion absolue qui rassure ceux qui ont des choses à cacher — c'est-à-dire presque tous nos clients.</p>
+        </div>
+      </div>
+      <div>
+        <div class="zav-title">Ce que Chaque Contrat nous Apporte Vraiment</div>
+        <ul class="zav-list">
+          <li>Un accès physique et social à un environnement fermé</li>
+          <li>Des informations passives collectées par nos agents sur le terrain</li>
+          <li>Une référence supplémentaire qui ouvre la prochaine porte</li>
+          <li>Un revenu légal qui justifie nos flux financiers globaux</li>
+          <li>Une relation de confiance exploitable sur le long terme</li>
+          <li>Un prétexte opérationnel pour être présents là où nous devons l'être</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════ ACTIVITÉS ════════ -->
+<div class="hdiv"></div>
+<section id="activites" class="section-pad">
+  <div class="container">
+    <p class="sec-eyebrow reveal">Opérations &amp; Activités</p>
+    <h2 class="sec-h2 reveal reveal-delay-1">Nos <em>Activités</em></h2>
+    <div class="sec-rule reveal reveal-delay-2"></div>
+    <p class="sec-lead reveal reveal-delay-2">Le spectre complet des activités de la Zvezda — du service de sécurité parfaitement légal à l'opération la plus sensible. Chaque couche légale protège et finance la suivante. Chaque activité est pensée pour être cohérente, documentée, et jouable.</p>
+
+    <div class="act-tabs-row reveal reveal-delay-3">
+      <button class="act-tab active" onclick="switchAct('legal', this)">// Légal — ZSG</button>
+      <button class="act-tab" onclick="switchAct('grise', this)">// Zone Grise</button>
+      <button class="act-tab" onclick="switchAct('classif', this)">// Classifié</button>
+
+    </div>
+
+    <!-- LÉGAL -->
+    <div id="act-legal" class="act-panel active">
+      <div class="act-grid">
+        <div class="act-card">
+          <div class="act-level lvl-legal"><span class="level-dot"></span>Légal — Core Business</div>
+          <div class="act-title">Protection Événementielle &amp; Clubs</div>
+          <div class="act-location">// Boîtes de Nuit, Soirées Privées, Établissements</div>
+          <div class="act-body">Le cœur visible de ZSG. Présence permanente dans les clubs sous contrat — contrôle des accès, gestion des situations, filtrage des entrées. Chaque agent sur le terrain est une oreille. On voit qui fréquente qui, quels deals se font en coulisse, quels élus sont là en dehors de leurs fonctions officielles. <strong>Chaque nuit de travail est une collecte de renseignement.</strong></div>
+        </div>
+        <div class="act-card">
+          <div class="act-level lvl-legal"><span class="level-dot"></span>Légal — Institutionnel</div>
+          <div class="act-title">Partenariats Gouvernementaux &amp; Diplomatiques</div>
+          <div class="act-location">// Mairie, Gouvernement Local, Ambassades, Consulats</div>
+          <div class="act-body">Contrats officiels pour la sécurisation d'événements publics et la protection de fonctionnaires. Ces missions placent ZSG au cœur des institutions — plannings des forces de l'ordre, informations anticipées sur des décisions politiques, réseau de contacts irremplaçable. <strong>Une porte ouverte sur les coulisses du pouvoir.</strong></div>
+        </div>
+        <div class="act-card">
+          <div class="act-level lvl-legal"><span class="level-dot"></span>Légal — Conseil</div>
+          <div class="act-title">Audit de Sécurité Corporate</div>
+          <div class="act-location">// Entreprises, Promoteurs Immobiliers, Groupes Hôteliers</div>
+          <div class="act-body">Évaluation des failles sécuritaires, recommandations structurelles, formation des équipes internes. Ces missions offrent un accès contractuel aux systèmes et aux locaux de clients stratégiques — leurs vulnérabilités deviennent notre connaissance. Revenu récurrent, légalement inattaquable.</div>
+        </div>
+        <div class="act-card">
+          <div class="act-level lvl-legal"><span class="level-dot"></span>Légal — Logistique</div>
+          <div class="act-title">Transport Sécurisé — Sandy Shores &amp; Région</div>
+          <div class="act-location">// Aéroport Sandy Shores, Routes Régionales, Zones Portuaires</div>
+          <div class="act-body">Convois sécurisés officiels pour transport de valeurs ou de personnes. Notre présence régulière à l'aéroport de Sandy Shores est <strong>normalisée et justifiée</strong> contractuellement — ce qui la rend exploitable pour des opérations nécessitant ce point d'accès sans éveiller aucun soupçon.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ZONE GRISE -->
+    <div id="act-grise" class="act-panel">
+      <div class="act-grid">
+        <div class="act-card">
+          <div class="act-level lvl-mixed"><span class="level-dot"></span>Zone Grise — Renseignement</div>
+          <div class="act-title">Collecte &amp; Revente d'Informations</div>
+          <div class="act-location">// Clubs, Institutions, Dîners Privés, Événements</div>
+          <div class="act-body">Via nos présences légales ZSG, nous collectons des informations à haute valeur — conversations, transactions, identités, relations compromettantes. Ces données sont revendues à des concurrents économiques, des journalistes, ou des acteurs politiques. Aucune loi explicitement violée. <strong>Tout est légalement défendable.</strong></div>
+        </div>
+        <div class="act-card">
+          <div class="act-level lvl-mixed"><span class="level-dot"></span>Zone Grise — Finance</div>
+          <div class="act-title">Optimisation Fiscale Agressive</div>
+          <div class="act-location">// Structures Holdings, SCI, Comptes Offshore</div>
+          <div class="act-body">Des montages financiers complexes via des sociétés holdings et des structures offshore. Les marges de ZSG sont artificiellement gonflées via des prestataires liés, permettant de faire circuler des fonds importants dans un cadre légal questionnable mais défendable. La limite entre optimisation et blanchiment est notre terrain de jeu.</div>
+        </div>
+        <div class="act-card">
+          <div class="act-level lvl-mixed"><span class="level-dot"></span>Zone Grise — Influence</div>
+          <div class="act-title">Lobbying &amp; Pressions Discrètes</div>
+          <div class="act-location">// Sphère Politique, Décideurs Locaux, Appels d'Offres</div>
+          <div class="act-body">Des services rendus créent des obligations implicites. Ces leviers sont activés pour influencer des décisions contractuelles ou obtenir des informations anticipées sur des opérations. Jamais de menace directe — <strong>toujours un rappel de services rendus</strong>. Le chantage le plus efficace est celui qui ne dit pas son nom.</div>
+        </div>
+        <div class="act-card">
+          <div class="act-level lvl-mixed"><span class="level-dot"></span>Zone Grise — Logistique</div>
+          <div class="act-title">Réseau Transport &amp; Couverture Convois</div>
+          <div class="act-location">// Aéroport Sandy Shores, Entrepôts Région</div>
+          <div class="act-body">ZSG fournit des services de transport sécurisé pour clients corporate — ce qui inclut l'accès légal à des zones logistiques sensibles. Ce réseau sert d'infrastructure discrète pour faire transiter du matériel sans éveiller de soupçon, sous couverture de convois officiels ZSG.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLASSIFIÉ -->
+    <div id="act-classif" class="act-panel">
+      <div class="act-grid">
+        <div class="act-card">
+          <div class="act-level lvl-class"><span class="level-dot"></span>Classifié — Alpha</div>
+          <div class="act-title">Livraisons — Couverture Sandy Shores</div>
+          <div class="act-location">// Aéroport Sandy Shores — Point d'Entrée Régional</div>
+          <div class="act-body">L'aéroport de Sandy Shores, peu surveillé et éloigné des centres, est un point d'entrée idéal. Des convois ZSG — juridiquement irréprochables — servent d'escorte ou de couverture aux livraisons. <strong>Aucun membre de la Zvezda ne touche directement la marchandise.</strong> Des intermédiaires pré-identifiés gèrent la logistique physique. Nous fournissons la couverture.</div>
+        </div>
+        <div class="act-card">
+          <div class="act-level lvl-class"><span class="level-dot"></span>Classifié — Alpha</div>
+          <div class="act-title">Distribution — Réseau Clubs</div>
+          <div class="act-location">// Établissements Nocturnes sous Contrat ZSG</div>
+          <div class="act-body">Nos agents sur place contrôlent les accès et les flux dans les clubs partenaires. La marchandise circule sans que ZSG soit jamais directement impliquée. <strong>Commission prélevée sur chaque établissement</strong>, protégé par un accord tacite non documenté. Si ça tourne mal, c'est le gérant du club qui répond — pas nous.</div>
+        </div>
+        <div class="act-card">
+          <div class="act-level lvl-class"><span class="level-dot"></span>Classifié — Bêta</div>
+          <div class="act-title">Chantage &amp; Leviers de Pression</div>
+          <div class="act-location">// Personnalités Identifiées via Missions ZSG</div>
+          <div class="act-body">Les événements privés sécurisés par ZSG exposent régulièrement des personnalités dans des situations compromettantes. Ces informations sont archivées. Elles ne sont jamais utilisées à la légère — uniquement pour débloquer une situation critique ou obtenir un service stratégique. <strong>La menace implicite suffit généralement.</strong></div>
+        </div>
+        <div class="act-card">
+          <div class="act-level lvl-class"><span class="level-dot"></span>Classifié — Bêta</div>
+          <div class="act-title">Racket Premium</div>
+          <div class="act-location">// Commerces Stratégiques du District</div>
+          <div class="act-body">Certains commerces reçoivent une proposition de protection premium ZSG qu'il serait dommage de refuser. Le tarif est élevé, la protection est réelle, les alternatives présentées de façon suffisamment claire pour éviter tout refus. Légalement : des contrats signés librement. En pratique : <strong>un tribut mensuel.</strong></div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</section>
+
+<!-- ════════ OBJECTIFS ════════ -->
+<div class="hdiv"></div>
+<section id="objectifs" class="section-pad alt">
+  <div class="container">
+    <p class="sec-eyebrow reveal">Roadmap Opérationnelle</p>
+    <h2 class="sec-h2 reveal reveal-delay-1">Nos <em>Objectifs</em></h2>
+    <div class="sec-rule reveal reveal-delay-2"></div>
+    <p class="sec-lead reveal reveal-delay-2">La Zvezda se pilote avec des objectifs clairs à chaque horizon temporel. Court terme pour poser les bases, moyen terme pour consolider, long terme pour rendre la structure intouchable. Chaque cible est assignée, suivie, et documentée en interne.</p>
+
+    <div class="obj-split reveal reveal-delay-3">
+      <div class="obj-col">
+        <div class="obj-col-title">Phase 1 — Implantation</div>
+        <div class="obj-col-period">// Court terme — 0 à 3 mois</div>
+        <ul class="obj-list">
+          <li class="done">Enregistrement légal de ZSG LLC — Los Santos</li>
+          <li class="done">Obtention des premières licences de sécurité privée</li>
+          <li class="done">Décrochage des premiers contrats clubs et événementiel</li>
+          <li class="wip">Normalisation de la présence ZSG à Sandy Shores</li>
+          <li class="wip">Identification et recrutement des premiers informateurs</li>
+          <li>Cartographie complète des organisations actives sur le territoire</li>
+          <li>Constitution de la trésorerie initiale — opérations discrètes</li>
+        </ul>
+      </div>
+      <div class="obj-col">
+        <div class="obj-col-title">Phase 2 — Consolidation</div>
+        <div class="obj-col-period">// Moyen terme — 3 à 9 mois</div>
+        <ul class="obj-list">
+          <li>Devenir l'acteur sécurité incontournable du district</li>
+          <li>Décrocher un contrat gouvernemental ou diplomatique majeur</li>
+          <li>Tisser des liens formalisés avec au moins deux élus locaux</li>
+          <li>Lancer la structure de blanchiment immobilier — SCI opaque</li>
+          <li>Établir Sandy Shores comme point logistique opérationnel</li>
+          <li>Activer le premier levier de pression sur une personnalité identifiée</li>
+          <li>Monopole discret sur un segment de trafic ciblé et non contesté</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="obj-long reveal reveal-delay-4">
+      <div>
+        <div class="obj-long-label">// Long Terme — 9 mois+</div>
+        <div class="obj-long-title">L'Intouchabilité</div>
+      </div>
+      <div class="obj-long-body">
+        <p>L'objectif final de la Zvezda est simple à formuler, et long à atteindre : <strong>être si profondément intégré au tissu légal, économique et politique de la ville qu'une enquête sérieuse serait politiquement coûteuse</strong> pour ceux qui la lanceraient.</p>
+        <p>Concrètement : acquisition de participations dans des médias locaux pour contrôler le récit, extension des opérations à d'autres territoires, bâtir un héritage structurel qui <em>survive à ses fondateurs</em>. Une organisation qui ne repose pas sur des hommes, mais sur des systèmes.</p>
+        <p>Quand tout le monde a besoin de nous pour fonctionner, nous n'avons plus jamais besoin de menacer. <strong>C'est là où nous allons.</strong></p>
+      </div>
+    </div>
+
+    <!-- Leads projets -->
+    <p class="sec-eyebrow reveal" style="margin-top:4rem">// Leads Projets Actifs</p>
+    <div class="obj-leads reveal reveal-delay-2">
+
+      <div class="obj-lead-card">
+        <div class="olc-status ols-actif"><span class="olc-dot"></span>Actif</div>
+        <div class="olc-title">Contrat Sécurité — Club District</div>
+        <div class="olc-resp">Lead : Y. Makarov · Support : K. Karpov</div>
+        <div class="olc-desc">Premier contrat événementiel de ZSG. Présence permanente, contrôle des accès, infiltration du réseau VIP. Objectif parallèle : identifier les acteurs du milieu nocturne pour des propositions de protection premium.</div>
+      </div>
+
+      <div class="obj-lead-card">
+        <div class="olc-status ols-actif"><span class="olc-dot"></span>Actif</div>
+        <div class="olc-title">Réseau Informateurs — Institutions</div>
+        <div class="olc-resp">Lead : I. Volkov · Support : B. Adov</div>
+        <div class="olc-desc">Recrutement de sources dans les institutions clés — mairie, commissariat, presse. Chaque informateur géré séparément. Paiement via prestations ZSG fictives — légalement inattaquable.</div>
+      </div>
+
+      <div class="obj-lead-card">
+        <div class="olc-status ols-actif"><span class="olc-dot"></span>Actif</div>
+        <div class="olc-title">Sandy Shores — Point Logistique</div>
+        <div class="olc-resp">Lead : Y. Makarov · O. Tarasov</div>
+        <div class="olc-desc">Normalisation de la présence ZSG à l'aéroport via des contrats de transport légaux. Objectif : rendre notre présence banale avant toute utilisation opérationnelle sensible du point.</div>
+      </div>
+
+      <div class="obj-lead-card">
+        <div class="olc-status ols-dev"><span class="olc-dot"></span>En Développement</div>
+        <div class="olc-title">Structure Blanchiment Immobilier</div>
+        <div class="olc-resp">Lead : O. Tarasov · S. Kozlov</div>
+        <div class="olc-desc">Création d'une SCI opaque pour absorber les fonds via achats et reventes immobilières. Premier bien cible identifié. Montage offshore complémentaire en parallèle.</div>
+      </div>
+
+      <div class="obj-lead-card">
+        <div class="olc-status ols-dev"><span class="olc-dot"></span>En Développement</div>
+        <div class="olc-title">Opération Carnet d'Or</div>
+        <div class="olc-resp">Lead : B. Adov · I. Volkov</div>
+        <div class="olc-desc">Infiltration des dîners privés et événements politiques via ZSG Events. Constitution de dossiers sur personnalités locales. Cible : deux leviers sur des élus avant la fin du trimestre.</div>
+      </div>
+
+      <div class="obj-lead-card">
+        <div class="olc-status ols-plan"><span class="olc-dot"></span>Planification</div>
+        <div class="olc-title">Contrat Gouvernemental Majeur</div>
+        <div class="olc-resp">Lead : S. Kozlov · B. Adov</div>
+        <div class="olc-desc">Décrocher un contrat officiel avec la municipalité. En retour : légitimité absolue et accès indirect aux communications des forces de l'ordre locales. Passe par l'activation du réseau politique de Budimir.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════ AMBITIONS ════════ -->
+<div class="hdiv"></div>
+<section id="ambitions" class="section-pad">
+  <div class="container">
+    <p class="sec-eyebrow reveal">Vision Stratégique</p>
+    <h2 class="sec-h2 reveal reveal-delay-1">Les <em>Ambitions</em> de la Zvezda</h2>
+    <div class="sec-rule reveal reveal-delay-2"></div>
+    <p class="sec-lead reveal reveal-delay-2">La Zvezda ne pense pas en semaines. Elle pense en années. Chaque action d'aujourd'hui est une fondation pour quelque chose de plus grand — et cette architecture se déploie selon un plan dont seul Kozlov possède la vision complète.</p>
+
+    <!-- PHASES -->
+    <div class="ambitions-phases reveal reveal-delay-3">
+      <div class="phase-card active-phase">
+        <div class="ph-year">24</div>
+        <div class="ph-num">// PHASE.01</div>
+        <div class="ph-title">Implantation</div>
+        <div class="ph-period">2024 — En cours</div>
+        <div class="ph-body">Établir ZSG comme acteur crédible. Construire les premières relations institutionnelles. Poser l'infrastructure financière. Observer, cartographier, ne pas agir prématurément.</div>
+        <span class="phase-badge en-cours">En cours</span>
+      </div>
+      <div class="phase-card">
+        <div class="ph-year">25</div>
+        <div class="ph-num">// PHASE.02</div>
+        <div class="ph-title">Réseau</div>
+        <div class="ph-period">2025</div>
+        <div class="ph-body">Activer les premiers leviers d'influence. Intégrer les cercles politiques et économiques. Recruter deux à trois membres supplémentaires dans des secteurs stratégiques. Premier levier compromettant utilisé.</div>
+        <span class="phase-badge futur">Planifiée</span>
+      </div>
+      <div class="phase-card">
+        <div class="ph-year">26</div>
+        <div class="ph-num">// PHASE.03</div>
+        <div class="ph-title">Expansion</div>
+        <div class="ph-period">2026</div>
+        <div class="ph-body">Diversifier les sources de revenus. Étendre la couverture légale à de nouveaux secteurs. Prendre position dans l'immobilier local. Devenir indispensable à plusieurs acteurs institutionnels simultanément.</div>
+        <span class="phase-badge futur">Planifiée</span>
+      </div>
+      <div class="phase-card">
+        <div class="ph-year">27</div>
+        <div class="ph-num">// PHASE.04</div>
+        <div class="ph-title">Domination Discrète</div>
+        <div class="ph-period">2027 +</div>
+        <div class="ph-body">Contrôler suffisamment de nœuds dans le réseau économique et politique de Los Santos pour que les décisions importantes de la ville ne puissent pas se prendre sans tenir compte, de manière consciente ou non, des intérêts de la Zvezda.</div>
+        <span class="phase-badge futur">Horizon</span>
+      </div>
+      <div class="phase-card">
+        <div class="ph-num">// PHASE.05</div>
+        <div class="ph-title">Institution</div>
+        <div class="ph-period">Long terme</div>
+        <div class="ph-body">Devenir une structure qui survit à ses fondateurs. Une organisation qui pense à l'échelle de la génération — non d'un groupe d'individus. Atteindre un niveau d'enracinement tel qu'aucune autorité ne peut l'éliminer sans s'éliminer elle-même.</div>
+        <span class="phase-badge futur">Vision</span>
+      </div>
+      <div class="phase-card">
+        <div class="ph-num">// CONSTANT</div>
+        <div class="ph-title">Jamais Visible</div>
+        <div class="ph-period">Permanent</div>
+        <div class="ph-body">Quelle que soit la phase, quel que soit le niveau de puissance atteint : <strong>ne jamais apparaître comme une organisation criminelle</strong>. Toujours demeurer, aux yeux du monde, une entreprise de sécurité irréprochable dirigée par des professionnels respectables.</div>
+        <span class="phase-badge" style="border-color:var(--red1);color:var(--red2);background:var(--red4);">Immuable</span>
+      </div>
+    </div>
+
+    <!-- GRANDS PROJETS -->
+    <p class="sec-eyebrow reveal" style="margin-top:5rem">Projets Stratégiques Majeurs</p>
+    <h3 class="sec-h2 reveal reveal-delay-1" style="font-size:1.6rem">Les Quatre <em>Chantiers</em></h3>
+    <div class="sec-rule reveal reveal-delay-2"></div>
+
+    <div class="ambitions-projets reveal reveal-delay-3">
+
+      <div class="projet-card">
+        <div class="pr-alpha">α</div>
+        <div class="pr-code">Projet Alpha</div>
+        <div class="pr-title">L'Empire du Renseignement</div>
+        <div class="pr-body">
+          <p>Le renseignement est la matière première de la Zvezda. Avant l'argent, avant le pouvoir, avant les connexions — l'information. Projet Alpha consiste à construire un réseau de collecte d'informations à l'échelle de Los Santos, en utilisant les présences légales de ZSG comme couverture naturelle.</p>
+          <p><strong>État actuel :</strong> Volkov a déjà instrumenté plusieurs établissements clients. La base de données contient des informations sur 200+ individus identifiés comme potentiellement utiles. Un système de classement par niveau d'influence et de vulnérabilité est en place.</p>
+          <p><strong>Objectif :</strong> Atteindre une couverture suffisante pour anticiper les mouvements des forces de l'ordre, prévoir les évolutions politiques, et identifier les failles dans les organisations concurrentes avant qu'elles ne deviennent des menaces.</p>
+          <ul class="pr-items">
+            <li>Surveillance passive via caméras dans établissements ZSG</li>
+            <li>Réseau d'informateurs recrutés parmi le personnel de sécurité concurrents</li>
+            <li>Collecte de données financières via Tarasov (transactions suspectes identifiées)</li>
+            <li>Veille politique via Adov — accès aux cercles décisionnaires</li>
+            <li>Infiltration sociale via Karpov — accès aux réseaux mondains et privés</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="projet-card">
+        <div class="pr-alpha">β</div>
+        <div class="pr-code">Projet Bêta</div>
+        <div class="pr-title">L'Architecture Financière</div>
+        <div class="pr-body">
+          <p>Tarasov a une vision claire : construire un circuit financier capable de faire transiter des sommes importantes tout en demeurant indétectable. L'enjeu n'est pas de cacher de l'argent — c'est de le faire circuler avec une telle fluidité qu'il perd ses origines en chemin.</p>
+          <p><strong>Structure actuelle :</strong> Quatre entités légales — ZSG (core), une société de restauration, une galerie d'art contemporain, et une société de location de véhicules. Chaque entité est profitablement déficitaire de manière crédible, permettant de justifier des injections de capital.</p>
+          <p><strong>Objectif :</strong> Multiplier les structures pour atteindre un volume de blanchiment qui permette à la Zvezda de financer des opérations de grande envergure sans jamais laisser de traces directement traçables jusqu'aux fondateurs.</p>
+          <ul class="pr-items">
+            <li>Intégration d'une 5ème structure dans le secteur immobilier (2025)</li>
+            <li>Connexion à un réseau offshore via les contacts de Tarasov (Dubaï)</li>
+            <li>Mise en place d'un système de facturation croisée entre entités</li>
+            <li>Recrutement d'un comptable de confiance au niveau Tier III</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="projet-card">
+        <div class="pr-alpha">γ</div>
+        <div class="pr-code">Projet Gamma</div>
+        <div class="pr-title">Le Politique par Procuration</div>
+        <div class="pr-body">
+          <p>La Zvezda ne cherche pas à élire ses propres candidats — c'est trop visible, trop risqué, trop direct. Projet Gamma consiste à devenir l'intermédiaire discret dont les acteurs politiques ont besoin sans jamais le dire explicitement. Quelqu'un qui règle les problèmes. Quelqu'un qui fait les connections. Quelqu'un dont on a besoin.</p>
+          <p><strong>Adov est le chef de file.</strong> Son réseau des Balkans lui a appris que le pouvoir se construit en rendant des services avant d'en avoir besoin. Aujourd'hui, il a trois contacts institutionnels à Los Santos qui lui sont redevables — pour des raisons différentes, dans des domaines différents, et chacun ignore l'existence des autres.</p>
+          <p><strong>Objectif :</strong> Créer une situation où les décisions institutionnelles importantes de Los Santos — attributions de marchés, politiques sécuritaires, nominations dans les administrations — tiennent systématiquement compte, même implicitement, des intérêts de ZSG et de ses clients.</p>
+          <ul class="pr-items">
+            <li>3 contacts institutionnels actifs — niveaux variés</li>
+            <li>1 contact judiciaire en développement</li>
+            <li>Accès indirect à la presse locale via Karpov</li>
+            <li>Premier test de levier politique prévu pour Q1 2025</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="projet-card">
+        <div class="pr-alpha">δ</div>
+        <div class="pr-code">Projet Delta</div>
+        <div class="pr-title">L'Expansion — San Andreas</div>
+        <div class="pr-body">
+          <p>Los Santos est un point de départ, pas une destination finale. Projet Delta est encore à l'état de note — Kozlov seul en possède les contours précis — mais son principe est connu des membres du Cercle Interne : une fois Los Santos suffisamment verrouillée, l'organisation s'étend à d'autres villes de San Andreas.</p>
+          <p>La méthode sera différente de l'implantation initiale. Plutôt que de construire ex nihilo, la Zvezda va chercher des structures locales déjà établies — des organisations moins sophistiquées, qui ont des ressources mais pas de vision — et les intégrer, via des partenariats ou des absorptions discrètes, à son propre réseau.</p>
+          <p><strong>Horizon :</strong> Phase non activée. Déclenchement conditionné à l'atteinte des objectifs Phase 03 à Los Santos.</p>
+          <ul class="pr-items">
+            <li>Cartographie préliminaire d'autres villes de San Andreas</li>
+            <li>Identification d'organisations potentiellement intégrables</li>
+            <li>Modèle de franchise ZSG en préparation</li>
+            <li>Réseaux politiques et financiers transférables en cours d'évaluation</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- ════════ FACETTES ════════ -->
+<div class="hdiv"></div>
+<section id="facettes" class="section-pad alt2">
+  <div class="container">
+    <p class="sec-eyebrow reveal">Spectre Opérationnel</p>
+    <h2 class="sec-h2 reveal reveal-delay-1">Facettes <em>Légales &amp; Illégales</em></h2>
+    <div class="sec-rule reveal reveal-delay-2"></div>
+    <p class="sec-lead reveal reveal-delay-2">La Zvezda opère sur un spectre complet — du contrat de sécurité parfaitement légal à l'opération la plus classifiée. Ces deux facettes ne sont pas en opposition : elles se nourrissent mutuellement, chaque couche légale finançant et protégeant la suivante.</p>
+  </div>
+
+  <div class="facettes-new reveal reveal-delay-3">
+
+    <!-- LÉGAL -->
+    <div class="facette-col">
+      <div class="fc-header fc-header-legal">
+        <div class="fc-badge fc-badge-legal"><span class="fc-dot"></span>Activités Légales — ZSG</div>
+        <div class="fc-title">La Façade</div>
+        <span class="fc-sub">Ce que le monde voit</span>
+      </div>
+      <div class="fc-lead">ZSG est une entreprise de sécurité privée premium — irréprochable dans ses pratiques. C'est la première couche, la plus visible. Pas pour ses revenus — pour ce qu'elle justifie.</div>
+      <ul class="fc-rows">
+        <li class="fc-row">
+          <div class="fc-row-icon icon-legal">◈</div>
+          <div class="fc-row-content">
+            <div class="fc-row-label label-legal">Protection</div>
+            <div class="fc-row-text"><strong>Protection rapprochée &amp; événementielle</strong> — Contrats avec clubs, personnalités, événements institutionnels. Chaque agent est une source d'information passive.</div>
+          </div>
+        </li>
+        <li class="fc-row">
+          <div class="fc-row-icon icon-legal">◉</div>
+          <div class="fc-row-content">
+            <div class="fc-row-label label-legal">Institutionnel</div>
+            <div class="fc-row-text"><strong>Partenariats gouvernementaux</strong> — Sécurisation de réceptions diplomatiques. Accès aux coulisses du pouvoir local.</div>
+          </div>
+        </li>
+        <li class="fc-row">
+          <div class="fc-row-icon icon-legal">◆</div>
+          <div class="fc-row-content">
+            <div class="fc-row-label label-legal">Conseil</div>
+            <div class="fc-row-text"><strong>Audit sécurité &amp; conseil corporate</strong> — Accès contractuellement légitimé aux systèmes et données sensibles des clients.</div>
+          </div>
+        </li>
+        <li class="fc-row">
+          <div class="fc-row-icon icon-legal">⬡</div>
+          <div class="fc-row-content">
+            <div class="fc-row-label label-legal">Formation</div>
+            <div class="fc-row-text"><strong>École de sécurité ZSG</strong> — Organisme certifié, vecteur de crédibilité institutionnelle et couverture au recrutement.</div>
+          </div>
+        </li>
+        <li class="fc-row">
+          <div class="fc-row-icon icon-legal">◐</div>
+          <div class="fc-row-content">
+            <div class="fc-row-label label-legal">Crise</div>
+            <div class="fc-row-text"><strong>Gestion de crise &amp; évacuation</strong> — Présence lors des moments de vulnérabilité des clients. Dettes morales durables.</div>
+          </div>
+        </li>
+        <li class="fc-row">
+          <div class="fc-row-icon icon-legal">⬛</div>
+          <div class="fc-row-content">
+            <div class="fc-row-label label-legal">Immobilier</div>
+            <div class="fc-row-text"><strong>Sécurité immobilière &amp; résidentielle</strong> — Contrats récurrents avec propriétaires fortunés. Accès physique durable et discret.</div>
+          </div>
+        </li>
+      </ul>
+      <div class="fc-foot fc-foot-legal">La façade légale n'est pas un costume. C'est une forteresse. Ce qui est visible doit être impeccable.</div>
+    </div>
+
+    <!-- CLASSIFIÉ -->
+    <div class="facette-col">
+      <div class="fc-header fc-header-classif">
+        <div class="fc-badge fc-badge-classif"><span class="fc-dot"></span>Activités Classifiées</div>
+        <div class="fc-title">La Réalité</div>
+        <span class="fc-sub">Ce que personne ne doit voir</span>
+      </div>
+      <div class="fc-lead">Derrière ZSG, des outils parallèles — séparés de la structure légale, activés avec parcimonie. Ces opérations ne sont jamais reliées directement aux fondateurs.</div>
+      <ul class="fc-rows">
+        <li class="fc-row">
+          <div class="fc-row-icon icon-classif">◈</div>
+          <div class="fc-row-content">
+            <div class="fc-row-label label-classif">Renseignement</div>
+            <div class="fc-row-text"><strong>Trafic d'informations</strong> — Revente à des concurrents économiques ou acteurs politiques. Collecté via présences ZSG. Aucune loi explicitement violée.</div>
+          </div>
+        </li>
+        <li class="fc-row">
+          <div class="fc-row-icon icon-classif">◉</div>
+          <div class="fc-row-content">
+            <div class="fc-row-label label-classif">Finance</div>
+            <div class="fc-row-text"><strong>Blanchiment d'actifs sophistiqué</strong> — Architecture Tarasov. Quatre structures légales. Flux croisés, facturations fantômes, injections justifiées.</div>
+          </div>
+        </li>
+        <li class="fc-row">
+          <div class="fc-row-icon icon-classif">◆</div>
+          <div class="fc-row-content">
+            <div class="fc-row-label label-classif">Pression</div>
+            <div class="fc-row-text"><strong>Pression &amp; leverage</strong> — Dossiers compromettants pour orienter des décisions. Jamais de menace explicite. Toujours sous-entendu.</div>
+          </div>
+        </li>
+        <li class="fc-row">
+          <div class="fc-row-icon icon-classif">◐</div>
+          <div class="fc-row-content">
+            <div class="fc-row-label label-classif">Logistique</div>
+            <div class="fc-row-text"><strong>Facilitation de trafics tiers</strong> — La Zvezda ne gère pas en direct. Elle <em>facilite</em>. Passage, stockage, couverture — contre rétribution.</div>
+          </div>
+        </li>
+        <li class="fc-row">
+          <div class="fc-row-icon icon-classif">⬡</div>
+          <div class="fc-row-content">
+            <div class="fc-row-label label-classif">Contrainte</div>
+            <div class="fc-row-text"><strong>Extraction d'actifs</strong> — Récupération de fonds pour des tiers via pressions graduelles, là où les voies légales sont impraticables.</div>
+          </div>
+        </li>
+        <li class="fc-row">
+          <div class="fc-row-icon icon-classif">⬛</div>
+          <div class="fc-row-content">
+            <div class="fc-row-label label-classif">Menaces</div>
+            <div class="fc-row-text"><strong>Neutralisation de menaces</strong> — Gestion des risques pour l'organisation. Par l'isolement, la réputation, le levier — jamais en direct.</div>
+          </div>
+        </li>
+      </ul>
+      <div class="fc-foot fc-foot-classif">Ces activités n'existent dans aucun document. Seul le Cercle Interne en a connaissance. Chaque opération est cloisonnée.</div>
+    </div>
+
+  </div>
+
+  <!-- ZONE GRISE -->
+  <div class="container" style="margin-top:4rem">
+    <p class="sec-eyebrow reveal">Entre les deux</p>
+    <h3 class="sec-h2 reveal reveal-delay-1" style="font-size:1.5rem">La <em>Zone Grise</em></h3>
+    <div class="sec-rule reveal reveal-delay-2"></div>
+    <p class="sec-lead reveal reveal-delay-2">Entre le légal et l'illégal, il existe un espace que la Zvezda maîtrise mieux que n'importe qui : les activités qui sont techniquement légales mais moralement ambiguës, les pratiques qui se défendent devant un tribunal mais pas devant une conscience. C'est là que la véritable expertise de l'organisation s'exprime.</p>
+
+    <div class="zone-grise-cards reveal reveal-delay-3">
+      <div class="zg-card">
+        <div class="zg-icon">◎</div>
+        <div class="zg-title">Renseignement via Présences Légales</div>
+        <div class="zg-body">Les agents ZSG ne font pas d'espionnage — ils exercent leur métier de sécurité. Le fait que cette présence leur permette d'entendre des conversations privées, d'observer des transactions et de noter des habitudes n'est pas illégal. C'est simplement plus d'information que les clients ne l'imaginent.</div>
+        <span class="zg-badge">Légalement Défendable</span>
+      </div>
+      <div class="zg-card">
+        <div class="zg-icon">◇</div>
+        <div class="zg-title">Optimisation Fiscale à la Limite</div>
+        <div class="zg-body">L'architecture Tarasov opère dans les zones grises du droit fiscal. Les montages sont complexes, les structures légitimes, mais les intentions sont claires pour qui sait regarder. La frontière entre optimisation fiscale agressive et blanchiment déguisé est exactement là où Tarasov a choisi de s'installer.</div>
+        <span class="zg-badge">Questionnable mais Défendable</span>
+      </div>
+      <div class="zg-card">
+        <div class="zg-icon">◬</div>
+        <div class="zg-title">Lobbying Non Déclaré</div>
+        <div class="zg-body">Adov n'est pas enregistré comme lobbyiste. Il rend des services, crée des relations, tisse des liens. Le fait que ces relations aboutissent à des décisions qui favorisent les intérêts de ZSG est une coïncidence répétée. Aucune transaction ne relie explicitement le service au résultat.</div>
+        <span class="zg-badge">Influence Indirecte</span>
+      </div>
+      <div class="zg-card">
+        <div class="zg-icon">◌</div>
+        <div class="zg-title">Recrutement via l'École ZSG</div>
+        <div class="zg-body">L'école ZSG forme des professionnels de la sécurité en toute légalité. Le fait que certains diplômés soient ensuite orientés vers des missions moins orthodoxes — et ne comprennent pas toujours pour qui ils travaillent réellement — n'est inscrit dans aucun contrat. C'est simplement de la gestion des ressources humaines créative.</div>
+        <span class="zg-badge">Ethiquement Ambigu</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ MEMBRES ════════ -->
+<div class="hdiv"></div>
+<section id="membres" class="section-pad">
+  <div class="container">
+    <p class="sec-eyebrow reveal">Vnutrenniy Krug — Cercle Interne</p>
+    <h2 class="sec-h2 reveal reveal-delay-1">Les <em>Six Fondateurs</em></h2>
+    <div class="sec-rule reveal reveal-delay-2"></div>
+    <p class="sec-lead reveal reveal-delay-2">Six profils complémentaires. Six expertises distinctes. Un seul but commun. Le Vnutrenniy Krug est l'équipe la plus précisément constituée que la Zvezda puisse concevoir — chaque homme occupe une fonction irremplaçable dans l'architecture de l'organisation.</p>
+
+    <div class="membres-grid reveal reveal-delay-3">
+
+      <!-- SERGEI KOZLOV -->
+      <div class="membre-card">
+        <div class="m-id">ID-001 // PAKHAN // TIER-I</div>
+        <div class="m-rang">◈ Pakhan — Chef de l'Organisation</div>
+        <div class="m-nom">Sergei Kozlov</div>
+        <span class="m-alias">Nydr0b9 ID : 357560014338129930</span>
+        <div class="m-sep"></div>
+        <div class="m-traits">
+          <span class="m-trait">Sang-froid</span><span class="m-trait">Visionnaire</span>
+          <span class="m-trait">Stratège</span><span class="m-trait">Manipulateur</span>
+          <span class="m-trait">Froid</span>
+        </div>
+        <div class="m-bio">Fils d'un officier du FSB et d'une avocate d'affaires, Sergei a grandi entre deux mondes : celui des lois et celui qui les contourne. Diplômé en droit international à Moscou, il a travaillé dans une cellule de renseignement économique avant de disparaître des radars officiels. À Los Santos, il incarne la face publique de ZSG — costume impeccable, discours calibré, réseau enviable. Il ne crie jamais. Il n'en a pas besoin. Kozlov est l'architecte de tout ce que la Zvezda représente.</div>
+        <div class="m-goal">
+          <div class="m-goal-label">Objectif Personnel</div>
+          <div class="m-goal-text">« Bâtir un empire légal si solide qu'aucune institution ne pourra jamais le toucher. Être un jour assis à la même table que ceux qui font les lois — pas pour les respecter, mais pour les écrire. »</div>
+        </div>
+      </div>
+
+      <!-- IVAR VOLKOV -->
+      <div class="membre-card">
+        <div class="m-id">ID-002 // VNUTRENNIY KRUG // TIER-II</div>
+        <div class="m-rang">◆ Sovietnik — Conseiller &amp; Renseignement</div>
+        <div class="m-nom">Ivar Volkov</div>
+        <span class="m-alias">Bylkaa952 ID : 480265028285628433</span>
+        <div class="m-sep"></div>
+        <div class="m-traits">
+          <span class="m-trait">Discret</span><span class="m-trait">Intuitif</span>
+          <span class="m-trait">Analyste</span><span class="m-trait">Paranoïaque</span>
+          <span class="m-trait">Méthodique</span>
+        </div>
+        <div class="m-bio">Ivar n'existe presque pas — au sens littéral. Trois identités connues, aucun casier dans aucun État. Ancien analyste en renseignement pour un groupe privé baltique, il est l'oreille de la Zvezda : il écoute, compile, anticipe. Ses rapports sont légendaires pour leur précision. Il voit les problèmes trois semaines avant qu'ils surviennent — et prépare les solutions avant même que le problème soit admis.</div>
+        <div class="m-goal">
+          <div class="m-goal-label">Objectif Personnel</div>
+          <div class="m-goal-text">« Construire le réseau d'informateurs le plus étendu de la ville. Savoir ce que savent les puissants avant qu'eux-mêmes ne le réalisent. L'information est la seule vraie richesse. »</div>
+        </div>
+      </div>
+
+      <!-- YOURI MAKAROV -->
+      <div class="membre-card">
+        <div class="m-id">ID-003 // VNUTRENNIY KRUG // TIER-II</div>
+        <div class="m-rang">◉ Brigadir — Chef Opérationnel</div>
+        <div class="m-nom">Youri Makarov</div>
+        <span class="m-alias">Amadhy ID : 212240805950259200</span>
+        <div class="m-sep"></div>
+        <div class="m-traits">
+          <span class="m-trait">Méthodique</span><span class="m-trait">Froid</span>
+          <span class="m-trait">Pragmatique</span><span class="m-trait">Loyal</span>
+          <span class="m-trait">Logistique</span>
+        </div>
+        <div class="m-bio">Ancien forces spéciales, sept ans de service. Il planifie les opérations de la Zvezda avec la rigueur d'un militaire et la créativité d'un entrepreneur. Responsable logistique officiel de ZSG, il coordonne tout ce qui ne figure dans aucun registre. Fiable comme une montre suisse, et tout aussi impitoyable. Il n'improvise jamais — et il ne tolère pas que les autres le fassent.</div>
+        <div class="m-goal">
+          <div class="m-goal-label">Objectif Personnel</div>
+          <div class="m-goal-text">« Prouver qu'une opération bien planifiée ne peut pas échouer. Bâtir une structure opérationnelle qui survive à ses membres — une machine parfaite, indépendante des hommes qui la font tourner. »</div>
+        </div>
+      </div>
+
+      <!-- OLEG TARASOV -->
+      <div class="membre-card">
+        <div class="m-id">ID-004 // VNUTRENNIY KRUG // TIER-II</div>
+        <div class="m-rang">◐ Finansist — Directeur Financier</div>
+        <div class="m-nom">Oleg Tarasov</div>
+        <span class="m-alias">Biozard92.94 ID : 667437761669627935</span>
+        <div class="m-sep"></div>
+        <div class="m-traits">
+          <span class="m-trait">Finance Offshore</span><span class="m-trait">Discret</span>
+          <span class="m-trait">Calculateur</span><span class="m-trait">Cupide</span>
+          <span class="m-trait">Créatif</span>
+        </div>
+        <div class="m-bio">Diplômé de finance à Saint-Pétersbourg, cinq ans dans une banque offshore avant de rejoindre Kozlov. Le blanchiment d'argent est, pour lui, une science exacte. Il aime les chiffres parce qu'ils ne mentent jamais — et parce qu'il sait exactement quand les faire mentir. Avec lui, chaque rouble sale finit propre, rentabilisé, réinvesti. Son architecture financière est une œuvre d'art fonctionnelle.</div>
+        <div class="m-goal">
+          <div class="m-goal-label">Objectif Personnel</div>
+          <div class="m-goal-text">« Accumuler assez de capital propre pour ne plus jamais dépendre de personne. Racheter une banque — pas pour la diriger, mais pour comprendre à quel point le système est facile à manipuler de l'intérieur. »</div>
+        </div>
+      </div>
+
+      <!-- KIRILL KARPOV -->
+      <div class="membre-card">
+        <div class="m-id">ID-005 // VNUTRENNIY KRUG // TIER-II</div>
+        <div class="m-rang">⬡ Boyevik — Agent de Terrain</div>
+        <div class="m-nom">Kirill Karpov</div>
+        <span class="m-alias">Blooodstaineeedd ID : 143948076583748008​6</span>
+        <div class="m-sep"></div>
+        <div class="m-traits">
+          <span class="m-trait">Impulsif</span><span class="m-trait">Téméraire</span>
+          <span class="m-trait">Charismatique</span><span class="m-trait">Féroce</span>
+          <span class="m-trait">Terrain</span>
+        </div>
+        <div class="m-bio">Ancien boxeur professionnel reconverti en homme de main pour diverses organisations slaviennes, il a rejoint la Zvezda grâce à Makarov. Sur le terrain, il est irremplaçable. En réunion, il doit être tenu en laisse. Il n'a pas peur de grand-chose — ce qui le rend précieux, et parfois incontrôlable. Youri est le seul à pouvoir le recadrer sans incident. Kirill ne recule jamais. C'est sa force. C'est son danger.</div>
+        <div class="m-goal">
+          <div class="m-goal-label">Objectif Personnel</div>
+          <div class="m-goal-text">« Être respecté — pas craint. Montrer qu'un homme de terrain peut devenir plus que ce que son passé lui permet d'espérer. Gravir les rangs de la Zvezda jusqu'à devenir indispensable. »</div>
+        </div>
+      </div>
+
+      <!-- BUDIMIR ADOV -->
+      <div class="membre-card">
+        <div class="m-id">ID-006 // VNUTRENNIY KRUG // TIER-II</div>
+        <div class="m-rang">◑ Boyevik — Relations &amp; Infiltration</div>
+        <div class="m-nom">Budimir Adov</div>
+        <span class="m-alias">Lilmonkey5496 ID : 646435751411843097</span>
+        <div class="m-sep"></div>
+        <div class="m-traits">
+          <span class="m-trait">Sociable</span><span class="m-trait">Charmeur</span>
+          <span class="m-trait">Opportuniste</span><span class="m-trait">Double-jeu</span>
+          <span class="m-trait">Polyglotte</span>
+        </div>
+        <div class="m-bio">Le plus jeune, le plus souriant, le plus dangereux à sous-estimer. Né dans une famille serbo-russe, il parle cinq langues et s'adapte à n'importe quel milieu social sans effort apparent. Il est le visage de la Zvezda dans les dîners politiques, les soirées mondaines et les couloirs ministériels. Il n'a aucun scrupule à mentir quand c'est nécessaire. Son carnet d'adresses est l'arme la plus précieuse de l'organisation.</div>
+        <div class="m-goal">
+          <div class="m-goal-label">Objectif Personnel</div>
+          <div class="m-goal-text">« Infiltrer les hautes sphères politiques locales. Devenir l'intermédiaire incontournable entre le gouvernement et le secteur privé — et toucher une commission sur chaque deal qui passe par moi. »</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════ FINALE ════════ -->
+<div class="hdiv"></div>
+<section id="finale">
+  <div class="finale-bg"></div>
+  <div class="finale-grid"></div>
+  <div class="finale-corner tl"></div>
+  <div class="finale-corner tr"></div>
+  <div class="finale-corner bl"></div>
+  <div class="finale-corner br"></div>
+
+  <div class="finale-content reveal">
+    <div class="finale-seal">⬛ &nbsp; Fin du Dossier — Lecture Unique Autorisée &nbsp; ⬛</div>
+
+    <span class="finale-num">// DOSSIER N°001 — PAGE TERMINALE</span>
+
+    <svg class="finale-star" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="55" cy="55" r="53" stroke="rgba(80,144,184,0.15)" stroke-width="0.5"/>
+      <polygon points="55,12 62,34 85,34 67,47 74,70 55,57 36,70 43,47 25,34 48,34"
+               fill="rgba(42,90,120,0.12)" stroke="rgba(80,144,184,0.5)" stroke-width="1"/>
+      <circle cx="55" cy="55" r="5" fill="rgba(80,144,184,0.4)" stroke="rgba(80,144,184,0.6)" stroke-width="0.5"/>
+    </svg>
+
+    <h2 class="finale-h">
+      L'Étoile<br>ne s'éteint pas.
+      <em>Она только скрывается.</em>
+    </h2>
+
+    <div class="finale-rule"></div>
+
+    <p class="finale-manifeste">
+      Vous avez lu le dossier. Vous connaissez les noms, les rôles, les ambitions.<br>
+      Vous savez comment l'argent circule sans laisser de traces, comment une poignée de main dans un couloir vaut plus qu'un contrat signé, comment six hommes ont décidé, en seize heures dans une chambre d'Istanbul, de <strong>reécrire les règles d'une ville entière</strong>.<br><br>
+      Ce que vous ne savez pas encore — ce que personne en dehors du Cercle Interne ne sait —<br>
+      c'est <em>jusqu'où ça va aller</em>.
+    </p>
+
+    <div class="finale-divider">
+      <div class="finale-divider-line"></div>
+      <span class="finale-divider-icon">⬛</span>
+      <div class="finale-divider-line"></div>
+    </div>
+
+    <div class="finale-quote-wrap">
+      <p class="finale-quote">
+        « Les empires qui durent ne se bâtissent pas dans le bruit.<br>
+        Ils se construisent dans le silence, pierre par pierre,<br>
+        pendant que le monde regarde ailleurs.<br>
+        Quand les gens remarqueront que quelque chose a changé —<br>
+        il sera trop tard pour comprendre quand ça a commencé. »
+      </p>
+      <div class="finale-cite">— Sergei Kozlov · Note Personnelle · Los Santos, 2024</div>
+    </div>
+
+    <div class="finale-footer-row">
+      <span class="finale-stamp">Dossier N°001 — Vnutrenniy Krug</span>
+      <span class="finale-stamp">Classification : Absolument Confidentiel</span>
+      <span class="finale-stamp">Тень защищает звезду</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ FOOTER ════════ -->
+<div class="hdiv"></div>
+<footer>
+  <div class="ft-brand">
+    <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="13.5" stroke="rgba(80,144,184,0.2)" stroke-width="0.5"/>
+      <polygon points="14,3 16.5,10.5 24.5,10.5 18,15.5 20.5,23 14,18.5 7.5,23 10,15.5 3.5,10.5 11.5,10.5"
+               fill="none" stroke="rgba(80,144,184,0.4)" stroke-width="0.8"/>
+    </svg>
+    <div>
+      <span class="ft-name">Chernaya Zvezda</span>
+      <span class="ft-sub">Zvezda Security Group LLC — Los Santos</span>
+    </div>
+  </div>
+  <div class="ft-center">
+    <div class="ft-motto">Тень защищает звезду</div>
+    <span class="ft-motto-fr">L'ombre protège l'étoile</span>
+  </div>
+  <div class="ft-right">
+    Dossier N°001 — Usage Interne<br>
+    Classification : Confidentiel<br>
+    Fondation : 12 Janvier 2024<br>
+    ⬛ Chernaya Zvezda — 2024
+  </div>
+</footer>
+
+<script>
+/* ──── PROGRESS BAR ──── */
+window.addEventListener('scroll', () => {
+  const st = document.documentElement.scrollTop;
+  const sh = document.documentElement.scrollHeight - window.innerHeight;
+  document.getElementById('progress-bar').style.width = (st / sh * 100) + '%';
+});
+
+/* ──── NAVBAR ──── */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* ──── ACTIVE NAV LINK ──── */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(a => a.classList.remove('active'));
+      const active = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { threshold: 0.35 });
+sections.forEach(s => obs.observe(s));
+
+/* ──── SCROLL REVEAL ──── */
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+
+/* ──── CHAPTER TABS ──── */
+function switchCh(id, btn) {
+  document.querySelectorAll('.ch-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ch-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ──── ACTIVITES TABS ──── */
+function switchAct(tab, btn) {
+  document.querySelectorAll('.act-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.act-tab').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById('act-' + tab);
+  if (panel) panel.classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ──── ACTIVITES TABS (legacy support) ──── */
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById('tab-' + tab);
+  if (panel) panel.classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ──── PRELOADER ──── */
+(function() {
+  const pl      = document.getElementById('preloader');
+  const bar     = document.getElementById('plBar');
+  const status  = document.getElementById('plStatus');
+  const lines   = document.querySelectorAll('.pl-terminal-line');
+
+  const statusMsgs = [
+    'Initialisation...', 'Authentification...', 'Tunnel sécurisé...',
+    'Validation identité...', 'Chargement dossier...', 'Vérification intégrité...',
+    'Accès accordé.'
+  ];
+
+  let pct = 0;
+  let step = 0;
+
+  // Reveal terminal lines one by one
+  lines.forEach(line => {
+    const delay = parseInt(line.dataset.delay) || 0;
+    setTimeout(() => line.classList.add('show'), delay + 400);
+  });
+
+  // Animate progress bar
+  const interval = setInterval(() => {
+    const increment = step < 5 ? Math.random() * 14 + 4 : Math.random() * 6 + 2;
+    pct = Math.min(pct + increment, 100);
+    bar.style.width = pct + '%';
+    if (statusMsgs[step]) { status.textContent = statusMsgs[step]; step++; }
+    if (pct >= 100) {
+      clearInterval(interval);
+      status.textContent = 'Accès accordé. Bienvenue.';
+      setTimeout(() => { pl.classList.add('hidden'); }, 520);
+    }
+  }, 340);
+})();
+
+</script>
+</body>
+</html>
