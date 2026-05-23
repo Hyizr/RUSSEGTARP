@@ -1199,6 +1199,149 @@ footer {
 .lfs-label { font-family: var(--mono); font-size: 0.44rem; letter-spacing: 0.4em; color: var(--text3); text-transform: uppercase; }
 .lfs-val   { font-family: var(--serif); font-style: italic; font-size: 0.95rem; color: var(--text2); }
 
+/* ═══════════════════════════════════════════
+   LEAD HRP
+═══════════════════════════════════════════ */
+.lead-layout {
+  display: grid; grid-template-columns: 1fr 340px; gap: 5rem; align-items: start;
+  margin-top: 4rem;
+}
+@media (max-width: 900px) { .lead-layout { grid-template-columns: 1fr; } }
+
+/* — ID Card — */
+.lead-id-card {
+  background: var(--bg2); border: 1px solid var(--border2);
+  padding: 2.5rem; position: relative; overflow: hidden;
+}
+.lead-id-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--red2), var(--ice3), var(--gold1));
+}
+.lead-id-header {
+  display: flex; align-items: center; gap: 1.2rem; margin-bottom: 2rem;
+}
+.lead-id-badge {
+  font-family: var(--mono); font-size: 0.44rem; letter-spacing: 0.45em;
+  color: var(--red2); border: 1px solid rgba(176,32,32,0.45);
+  padding: 0.28rem 0.8rem; text-transform: uppercase;
+  background: rgba(138,24,24,0.07); animation: pulseRed 3s ease-in-out infinite;
+}
+.lead-id-title {
+  font-family: var(--display); font-weight: 900; font-size: 1.8rem;
+  color: var(--text0); letter-spacing: 0.08em; text-transform: uppercase;
+}
+.lead-id-title span { color: var(--ice2); }
+
+.lead-info-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  background: var(--border); margin-bottom: 2rem;
+}
+.lead-info-cell {
+  background: var(--bg3); padding: 1rem 1.2rem;
+}
+.lic-label {
+  font-family: var(--mono); font-size: 0.42rem; letter-spacing: 0.45em;
+  color: var(--text3); text-transform: uppercase; margin-bottom: 0.35rem;
+}
+.lic-val {
+  font-family: var(--serif); font-size: 1rem; color: var(--text0); font-weight: 400;
+}
+.lic-val.highlight { color: var(--ice2); font-style: italic; }
+.lic-val.gold { color: var(--gold2); }
+
+.lead-discord-box {
+  background: var(--bg1); border: 1px solid var(--border2);
+  padding: 1rem 1.4rem; display: flex; align-items: center; gap: 1rem;
+  margin-top: 1.5rem;
+}
+.ldb-icon { color: var(--ice4); font-size: 1.1rem; flex-shrink: 0; }
+.ldb-label { font-family: var(--mono); font-size: 0.42rem; letter-spacing: 0.4em; color: var(--text3); text-transform: uppercase; }
+.ldb-val { font-family: var(--mono); font-size: 0.6rem; color: var(--ice2); letter-spacing: 0.12em; margin-top: 0.2rem; }
+
+/* — Expériences — */
+.lead-xp-block { margin-top: 3.5rem; }
+.lead-xp-title {
+  font-family: var(--mono); font-size: 0.5rem; letter-spacing: 0.5em;
+  color: var(--ice3); text-transform: uppercase; margin-bottom: 2rem;
+  display: flex; align-items: center; gap: 1rem;
+}
+.lead-xp-title::after { content:''; flex:1; height:1px; background:var(--border2); }
+
+.lead-server {
+  background: var(--bg2); border: 1px solid var(--border); margin-bottom: 1px;
+  position: relative; overflow: hidden;
+}
+.lead-server::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+}
+.ls-lead::before  { background: var(--gold2); }
+.ls-member::before { background: var(--ice4); }
+.ls-second::before { background: var(--red2); }
+
+.lead-server-inner {
+  padding: 1.4rem 1.6rem 1.4rem 2rem;
+}
+.ls-srv-name {
+  font-family: var(--mono); font-size: 0.46rem; letter-spacing: 0.4em;
+  color: var(--text3); text-transform: uppercase; margin-bottom: 0.8rem;
+}
+.ls-entries { display: flex; flex-direction: column; gap: 0.6rem; }
+.ls-entry { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+.ls-role-badge {
+  font-family: var(--mono); font-size: 0.4rem; letter-spacing: 0.3em;
+  text-transform: uppercase; padding: 0.18rem 0.55rem; flex-shrink: 0;
+  border: 1px solid; white-space: nowrap;
+}
+.badge-lead   { color: var(--gold2); border-color: rgba(200,144,48,0.4); background: rgba(200,144,48,0.06); }
+.badge-second { color: var(--red2);  border-color: rgba(176,32,32,0.4);  background: rgba(138,24,24,0.06); }
+.badge-member { color: var(--ice2);  border-color: rgba(80,144,184,0.4); background: rgba(42,104,136,0.06); }
+
+.ls-proj-name {
+  font-family: var(--display); font-weight: 700; font-size: 0.85rem;
+  color: var(--text0); letter-spacing: 0.06em; flex: 1;
+}
+.ls-duration {
+  font-family: var(--mono); font-size: 0.42rem; letter-spacing: 0.3em;
+  color: var(--text3); white-space: nowrap;
+}
+
+/* — Sidebar stats — */
+.lead-sidebar { display: flex; flex-direction: column; gap: 1px; }
+
+.lead-stat-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  padding: 1.8rem 1.6rem; text-align: center; position: relative; overflow: hidden;
+}
+.lead-stat-card::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ice5), transparent);
+}
+.lsc-num {
+  font-family: var(--display); font-weight: 900; font-size: clamp(2rem,4vw,3rem);
+  color: var(--text0); line-height: 1; margin-bottom: 0.3rem;
+}
+.lsc-num.ice   { color: var(--ice2); }
+.lsc-num.gold  { color: var(--gold2); }
+.lsc-num.red   { color: var(--red2); }
+.lsc-label {
+  font-family: var(--mono); font-size: 0.44rem; letter-spacing: 0.4em;
+  color: var(--text3); text-transform: uppercase; line-height: 1.6;
+}
+
+.lead-seal-box {
+  margin-top: 1px; background: var(--bg1); border: 1px solid var(--border);
+  padding: 1.6rem; text-align: center;
+}
+.lsb-icon { font-size: 1.5rem; color: var(--ice5); display: block; margin-bottom: 0.8rem; }
+.lsb-text {
+  font-family: var(--serif); font-style: italic; font-size: 0.9rem;
+  color: var(--text2); line-height: 1.7;
+}
+.lsb-sub {
+  font-family: var(--mono); font-size: 0.42rem; letter-spacing: 0.35em;
+  color: var(--text3); text-transform: uppercase; margin-top: 0.8rem; display: block;
+}
+
 </style>
 </head>
 <body>
@@ -1278,6 +1421,7 @@ footer {
     <li><a href="#facettes">Facettes</a></li>
     <li><a href="#membres">Membres</a></li>
     <li><a href="#lexique">Lexique</a></li>
+    <li><a href="#leadhrp">Lead HRP</a></li>
     <li><a href="#finale">Finale</a></li>
   </ul>
   <div class="nav-classif">⬛ Confidentiel</div>
@@ -2676,6 +2820,168 @@ footer {
           <div class="lfs-label">Diffusion</div>
           <div class="lfs-val">Cercle Interne uniquement — Vnutrenniy Krug</div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════ LEAD HRP ════════ -->
+<div class="hdiv"></div>
+<section id="leadhrp" class="section-pad">
+  <div class="container">
+    <p class="sec-eyebrow reveal">Dossier Personnel — Hors Roleplay</p>
+    <h2 class="sec-h2 reveal reveal-delay-1">Présentation <em>Lead HRP</em></h2>
+    <div class="sec-rule reveal reveal-delay-2"></div>
+    <p class="sec-lead reveal reveal-delay-2">Profil du responsable du projet Chernaya Zvezda. Expérience vérifiée, projets menés à terme, disponibilité et vision long terme confirmées.</p>
+
+    <div class="lead-layout reveal reveal-delay-3">
+
+      <!-- COLONNE GAUCHE -->
+      <div>
+        <!-- ID Card -->
+        <div class="lead-id-card">
+          <div class="lead-id-header">
+            <div class="lead-id-badge">⬛ Profil Vérifié</div>
+            <div class="lead-id-title">QUENTIN <span>// LEAD</span></div>
+          </div>
+
+          <div class="lead-info-grid">
+            <div class="lead-info-cell">
+              <div class="lic-label">Prénom</div>
+              <div class="lic-val">Quentin</div>
+            </div>
+            <div class="lead-info-cell">
+              <div class="lic-label">Âge</div>
+              <div class="lic-val">26 ans <span style="color:var(--text3);font-size:0.85em">— 09/07/2000</span></div>
+            </div>
+            <div class="lead-info-cell">
+              <div class="lic-label">Rôle</div>
+              <div class="lic-val highlight">Lead Projet</div>
+            </div>
+            <div class="lead-info-cell">
+              <div class="lic-label">Heures RP</div>
+              <div class="lic-val gold">3 000+ heures</div>
+            </div>
+          </div>
+
+          <div class="lead-discord-box">
+            <div class="ldb-icon">◈</div>
+            <div>
+              <div class="ldb-label">Discord</div>
+              <div class="ldb-val">NYDR0B9 &nbsp;·&nbsp; ID : 357560014338129930</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Expériences -->
+        <div class="lead-xp-block">
+          <div class="lead-xp-title">// Expériences Serveurs</div>
+
+          <!-- SPLIT -->
+          <div class="lead-server ls-lead">
+            <div class="lead-server-inner">
+              <div class="ls-srv-name">// Split</div>
+              <div class="ls-entries">
+                <div class="ls-entry">
+                  <span class="ls-role-badge badge-lead">Lead Projet</span>
+                  <span class="ls-proj-name">Rollin's 30 Harlem Crips</span>
+                  <span class="ls-duration">6 mois de projet</span>
+                </div>
+                <div class="ls-entry">
+                  <span class="ls-role-badge badge-lead">Lead Projet</span>
+                  <span class="ls-proj-name">0Block</span>
+                  <span class="ls-duration">4 mois de projet</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- HURRICANE -->
+          <div class="lead-server ls-member">
+            <div class="lead-server-inner">
+              <div class="ls-srv-name">// Hurricane</div>
+              <div class="ls-entries">
+                <div class="ls-entry">
+                  <span class="ls-role-badge badge-member">Gang Member</span>
+                  <span class="ls-proj-name">FrontStreet</span>
+                  <span class="ls-duration">2 mois de projet</span>
+                </div>
+                <div class="ls-entry">
+                  <span class="ls-role-badge badge-member">Gang Member</span>
+                  <span class="ls-proj-name">TRG</span>
+                  <span class="ls-duration">2 mois de projet</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ARKANE WL -->
+          <div class="lead-server ls-lead">
+            <div class="lead-server-inner">
+              <div class="ls-srv-name">// Arkane WL</div>
+              <div class="ls-entries">
+                <div class="ls-entry">
+                  <span class="ls-role-badge badge-lead">Lead Projet</span>
+                  <span class="ls-proj-name">Rollin's 30</span>
+                  <span class="ls-duration">3 mois de projet</span>
+                </div>
+                <div class="ls-entry">
+                  <span class="ls-role-badge badge-second">Second — GM</span>
+                  <span class="ls-proj-name">Black Mamba Family "BMF"</span>
+                  <span class="ls-duration">2 mois GM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RUFF RYDERS / NOFACE -->
+          <div class="lead-server ls-member">
+            <div class="lead-server-inner">
+              <div class="ls-srv-name">// Ruff Ryders — NoFace V1</div>
+              <div class="ls-entries">
+                <div class="ls-entry">
+                  <span class="ls-role-badge badge-member">Expérience</span>
+                  <span class="ls-proj-name">Ruff Ryders &amp; NoFace V1</span>
+                  <span class="ls-duration">Serveurs réputés</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SIDEBAR DROITE -->
+      <div class="lead-sidebar">
+
+        <div class="lead-stat-card">
+          <div class="lsc-num gold">3 000<span style="font-size:0.5em;color:var(--text2)">+</span></div>
+          <div class="lsc-label">Heures de<br>Roleplay</div>
+        </div>
+
+        <div class="lead-stat-card">
+          <div class="lsc-num ice">5</div>
+          <div class="lsc-label">Projets menés<br>à terme</div>
+        </div>
+
+        <div class="lead-stat-card">
+          <div class="lsc-num red">4</div>
+          <div class="lsc-label">Serveurs<br>différents</div>
+        </div>
+
+        <div class="lead-stat-card">
+          <div class="lsc-num" style="color:var(--text0)">26</div>
+          <div class="lsc-label">Ans —<br>09 / 07 / 2000</div>
+        </div>
+
+        <div class="lead-seal-box">
+          <span class="lsb-icon">⬛</span>
+          <div class="lsb-text">
+            Expérience multi-serveurs confirmée — lead de projets poussés jusqu'au bout, vision long terme, disponibilité et sérieux établis.
+          </div>
+          <span class="lsb-sub">// Dossier HRP — Chernaya Zvezda</span>
+        </div>
+
       </div>
     </div>
   </div>
